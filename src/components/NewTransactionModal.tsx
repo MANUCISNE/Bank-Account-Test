@@ -57,11 +57,11 @@ export function NewTransactionModal() {
         <Dialog.Overlay className="bg-theme-gray1-background opacity-70 fixed inset-0 w-full h-full" />
         <Dialog.Content
           className="bg-theme-gray2-shape-main w-[535px] rounded-md px-10 py-12 fixed 
-               top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
-               md:w-[535 px]"
+          top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
+          md:w-[535 px]"
         >
           <Dialog.Title className="text-theme-gray7-titles text-3xl font-bold">
-            Nova Transação
+            New user
           </Dialog.Title>
           <Dialog.Close>
             <button className="text-theme-gray6-base-text absolute top-6 right-6 cursor-pointer ">
@@ -74,72 +74,25 @@ export function NewTransactionModal() {
           >
             <input
               type="text"
-              placeholder="Descrição"
+              placeholder="Name"
               className="bg-theme-gray1-background rounded-md p-4 border border-theme-gray1-background
-                     placeholder:text-theme-gray5-placeholder focus:border-theme-green-dark"
+              placeholder:text-theme-gray5-placeholder focus:border-theme-green-dark"
               required
               {...register("userAccount")}
             />
             <input
-              type="number"
-              placeholder="Preço"
+              type="email"
+              placeholder="email@gmail.com"
               className="bg-theme-gray1-background rounded-md p-4 border border-theme-gray1-background
-                      placeholder:text-theme-gray5-placeholder focus:border-theme-green-dark"
+              placeholder:text-theme-gray5-placeholder focus:border-theme-green-dark"
               required
-              {...register("totalBalance", { valueAsNumber: true })}
             />
             <input
-              type="text"
-              placeholder="Categoria"
+              type="password"
+              placeholder="Create a password"
               className="bg-theme-gray1-background rounded-md p-4 border border-theme-gray1-background
-                     placeholder:text-theme-gray5-placeholder focus:border-theme-green-dark"
+              placeholder:text-theme-gray5-placeholder focus:border-theme-green-dark"
               required
-              {...register("category")}
-            />
-            <Controller
-              control={control}
-              name="type"
-              render={({ field }) => {
-                // console.log(field);
-                return (
-                  <RadioGroup.Root
-                    className="flex gap-4 justify-between"
-                    onValueChange={field.onChange}
-                    value={field.value}
-                  >
-                    <RadioGroup.Item
-                      value="income"
-                      className="w-52 h-14 flex gap-2 items-center justify-center bg-theme-gray3-shape-secondary 
-                        border border-theme-gray3-shape-secondary rounded-md text-theme-green-dark
-                        focus:text-theme-gray6-base-text  focus:bg-theme-green-dark
-                        data-[state=checked]:bg-theme-green-dark data-[state=checked]:text-theme-gray6-base-text
-                        hover:bg-theme-gray4-shape-tertiary transition ease-in duration-200git "
-                    >
-                      <ArrowCircleUp
-                        size={24}
-                        className=" hover:text-theme-gray6-base-text "
-                      />
-                      <span className="text-theme-gray6-base-text">
-                        Entrada
-                      </span>
-                    </RadioGroup.Item>
-                    <RadioGroup.Item
-                      value="outcome"
-                      className="w-52 h-14 flex gap-2 items-center justify-center bg-theme-gray3-shape-secondary
-                        border border-theme-gray3-shape-secondary rounded-md text-theme-red
-                        focus:text-theme-gray6-base-text data-[state=checked]:bg-theme-red-dark
-                        data-[state=checked]:text-theme-gray6-base-text hover:bg-theme-gray4-shape-tertiary
-                        transition ease-in duration-200"
-                    >
-                      <ArrowCircleDown
-                        size={24}
-                        className="hover:text-theme-gray6-base-text"
-                      />
-                      <span className="text-theme-gray6-base-text">Saída</span>
-                    </RadioGroup.Item>
-                  </RadioGroup.Root>
-                );
-              }}
             />
 
             {isSubmitting ? (
@@ -160,7 +113,7 @@ export function NewTransactionModal() {
                 className="h-14 p-5 mt-6 bg-theme-green text-theme-gray6-base-text rounded-md 
                         hover:bg-theme-green-dark cursor-pointer transition ease-in duration-200"
               >
-                Cadastrar
+                Create account
               </button>
             )}
           </form>

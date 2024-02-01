@@ -1,7 +1,7 @@
 "use client";
 
 import { UsersContext } from "@/contexts/UsersContext";
-import { dataFormatter, totalBalanceFormatter } from "@/utils/formatter";
+import { dataFormatter } from "@/utils/formatter";
 import { useContextSelector } from "use-context-selector";
 
 export function Table() {
