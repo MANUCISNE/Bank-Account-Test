@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    html {
+      font-family: Roboto;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    :focus {
+      outline: 0;
+      box-shadow: 0 0 0 2px color(#00b37e);
+    }
+    body {
+      background-color: #202024;
+      color: #c4c4cc;
+      -webkit-font-smoothing: antialiased;
+    }
+    body,
+    input,
+    textarea,
+    button {
+      font: 400 1rem Roboto, sans-serif;
+    }
+  }
