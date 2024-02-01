@@ -1,32 +1,29 @@
-'use client';
-import * as Dialog from '@radix-ui/react-dialog';
-import * as RadioGroup from '@radix-ui/react-radio-group';
+"use client";
+import * as Dialog from "@radix-ui/react-dialog";
+import * as RadioGroup from "@radix-ui/react-radio-group";
 
-import * as z from 'zod';
-import { Controller, useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from "zod";
+import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-import { ArrowCircleDown, ArrowCircleUp, CircleNotch, X } from 'phosphor-react';
+import { ArrowCircleDown, ArrowCircleUp, CircleNotch, X } from "phosphor-react";
 
-import { TransactionsContext } from '@/contexts/TransactionsContext';
-import { useContextSelector } from 'use-context-selector';
+import { UsersContext } from "@/contexts/UsersContext";
+import { useContextSelector } from "use-context-selector";
 
 const newTransactionModalSchema = z.object({
-  description: z.string(),
-  price: z.number(),
+  userAccount: z.string(),
+  totalBalance: z.number(),
   category: z.string(),
-  type: z.enum(['income', 'outcome']).optional(),
+  type: z.enum(["income", "outcome"]).optional(),
 });
 
 type NewTransactionFormInputs = z.infer<typeof newTransactionModalSchema>;
 
 export function NewTransactionModal() {
-  const createTransactions = useContextSelector(
-    TransactionsContext,
-    (context) => {
-      return context.createTransactions;
-    }
-  );
+  const createUsers = useContextSelector(UsersContext, (context) => {
+    return context.createUsers;
+  });
 
   const {
     control,
@@ -37,16 +34,16 @@ export function NewTransactionModal() {
   } = useForm<NewTransactionFormInputs>({
     resolver: zodResolver(newTransactionModalSchema),
     defaultValues: {
-      type: 'income',
+      type: "income",
     },
   });
 
   async function handleCreateNewTransaction(data: NewTransactionFormInputs) {
-    const { description, price, category, type } = data;
+    const { userAccount, totalBalance, category, type } = data;
 
-    await createTransactions({
-      description,
-      price,
+    await createUsers({
+      userAccount,
+      totalBalance,
       category,
       type,
     });
@@ -81,7 +78,7 @@ export function NewTransactionModal() {
               className="bg-theme-gray1-background rounded-md p-4 border border-theme-gray1-background
                      placeholder:text-theme-gray5-placeholder focus:border-theme-green-dark"
               required
-              {...register('description')}
+              {...register("userAccount")}
             />
             <input
               type="number"
@@ -89,7 +86,7 @@ export function NewTransactionModal() {
               className="bg-theme-gray1-background rounded-md p-4 border border-theme-gray1-background
                       placeholder:text-theme-gray5-placeholder focus:border-theme-green-dark"
               required
-              {...register('price', { valueAsNumber: true })}
+              {...register("totalBalance", { valueAsNumber: true })}
             />
             <input
               type="text"
@@ -97,7 +94,7 @@ export function NewTransactionModal() {
               className="bg-theme-gray1-background rounded-md p-4 border border-theme-gray1-background
                      placeholder:text-theme-gray5-placeholder focus:border-theme-green-dark"
               required
-              {...register('category')}
+              {...register("category")}
             />
             <Controller
               control={control}

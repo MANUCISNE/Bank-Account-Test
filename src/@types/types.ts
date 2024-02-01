@@ -1,27 +1,29 @@
 import { ReactNode } from 'react';
 
-export interface Transactions {
+export interface Users {
+  outcome: ReactNode;
+  income: ReactNode;
   id: number;
-  description: string;
+  userAccount: string;
   type: 'income' | 'outcome';
-  price: number;
+  totalBalance: number;
   category: string;
   createdAt: string;
 }
 
-export interface TransactionsContextType {
-  transactions: Transactions[];
-  fetchTransactions: (query?: string) => Promise<void>;
-  createTransactions: (data: CreateTransactionInput) => Promise<void>;
+export interface UsersContextType {
+  Users: Users[];
+  fetchUsers: (query?: string) => Promise<void>;
+  createUsers: (data: CreateTransactionInput) => Promise<void>;
 }
 
-export interface TransactionsProviderProps {
+export interface UsersProviderProps {
   children: ReactNode;
 }
 
 export interface CreateTransactionInput {
-  description: string;
+  userAccount: string;
   type?: 'income' | 'outcome';
-  price: number;
+  totalBalance: number;
   category: string;
 }
