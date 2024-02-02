@@ -20,6 +20,7 @@
     "react-dom": "^18",
     "react-hook-form": "^7.49.2",
     "scheduler": "^0.23.0",
+    "sqlite3": "^5.1.7",
     "use-context-selector": "^1.4.1",
     "zod": "^3.22.4"
   },

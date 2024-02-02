@@ -32,7 +32,6 @@ export function UsersProvider({ children }: UsersProviderProps) {
       userAccount,
       totalBalance,
       category,
-      type,
       createdAt: new Date(),
     });
 

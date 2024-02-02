@@ -15,7 +15,6 @@ const newTransactionModalSchema = z.object({
   userAccount: z.string(),
   totalBalance: z.number(),
   category: z.string(),
-  type: z.enum(["income", "outcome"]).optional(),
 });
 
 type NewTransactionFormInputs = z.infer<typeof newTransactionModalSchema>;
@@ -39,13 +38,12 @@ export function NewTransactionModal() {
   });
 
   async function handleCreateNewTransaction(data: NewTransactionFormInputs) {
-    const { userAccount, totalBalance, category, type } = data;
+    const { userAccount, totalBalance, category } = data;
 
     await createUsers({
       userAccount,
       totalBalance,
       category,
-      type,
     });
 
     reset();

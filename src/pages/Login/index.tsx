@@ -7,6 +7,8 @@ import { CircleNotch, X } from "phosphor-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useState } from "react";
 
+import handlerAllUsers from '@/services/api';
+
 interface FormValues {
   username: string;
   password: string;
@@ -47,7 +49,7 @@ export function Login() {
       md:w-[535 px] gap-4"
       >
         <Dialog.Root>
-          <form onSubmit={handleSubmit} className="flex flex-col mt-4 gap-4">
+          <form onSubmit={handlerAllUsers} className="flex flex-col mt-4 gap-4">
             <Dialog.Title className="text-theme-gray7-titles text-3xl font-bold">
               Login
             </Dialog.Title>
