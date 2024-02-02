@@ -6,7 +6,6 @@
       "income": "200",
       "outcome": "100",
       "email": "clararodrigues@gmail.com",
-      "type": "income",
       "category": "venda",
       "totalBalance": 14000,
       "createdAt": "2023-12-15T14:48:01.188Z"
@@ -16,7 +15,6 @@
       "userAccount": "Frank Stuart",
       "income": "200",
       "outcome": "100",
-      "type": "income",
       "category": "venda",
       "totalBalance": 4000,
       "createdAt": "2023-12-15T14:48:01.188Z"
@@ -26,7 +24,6 @@
       "userAccount": "Rogerio Santos",
       "income": "200",
       "outcome": "100",
-      "type": "income",
       "category": "venda",
       "totalBalance": 14000,
       "createdAt": "2023-12-15T14:48:01.188Z"
@@ -36,7 +33,6 @@
       "userAccount": "Ricardo Leite",
       "income": "200",
       "outcome": "100",
-      "type": "outcome",
       "category": "Locomoção",
       "totalBalance": 200,
       "createdAt": "2023-12-15T14:30:01.188Z"
@@ -47,7 +43,6 @@
       "outcome": "100",
       "totalBalance": 500,
       "category": "teste",
-      "type": "outcome",
       "createdAt": "2023-12-25T13:57:00.761Z",
       "id": 5
     },
@@ -57,7 +52,6 @@
       "outcome": "100",
       "totalBalance": 10000,
       "category": "venda",
-      "type": "income",
       "createdAt": "2023-12-25T14:16:47.919Z",
       "id": 6
     },
@@ -67,7 +61,6 @@
       "outcome": "100",
       "totalBalance": 10,
       "category": "alimentação",
-      "type": "outcome",
       "createdAt": "2023-12-25T14:44:25.126Z",
       "id": 7
     }
