@@ -4,15 +4,8 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { NewTransactionModal } from "./NewTransactionModal";
 import Image from "next/image";
 import { Login } from "@/pages/Login";
-import { useAuth } from "@/hooks/useAuth";
 
 export function Header() {
-  const { Logout } = useAuth();
-
-  function handleLogout() {
-    Logout();
-  }
-
   return (
     <>
       <div className="bg-theme-gray1-background pt-10 w-screen h-[130px]">
