@@ -1,6 +1,5 @@
 "use client";
 import { FormEvent, useState } from "react";
-import { useAuth } from "../../hooks/useAuth";
 
 interface FormValues {
   username: string;
