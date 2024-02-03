@@ -1,53 +1,16 @@
 "use client";
 import * as Dialog from "@radix-ui/react-dialog";
 
-import * as z from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-
 import { X } from "phosphor-react";
 
 import { UsersContext } from "@/contexts/UsersContext";
 import { useContextSelector } from "use-context-selector";
 import { SignUp } from "@/pages/SignUp";
 
-const newTransactionModalSchema = z.object({
-  userAccount: z.string(),
-  totalBalance: z.number(),
-  category: z.string(),
-});
-
-type NewTransactionFormInputs = z.infer<typeof newTransactionModalSchema>;
-
 export function NewTransactionModal() {
   const createUsers = useContextSelector(UsersContext, (context) => {
     return context.createUsers;
   });
-
-  const {
-    control,
-    register,
-    handleSubmit,
-    formState: { isSubmitting },
-    reset,
-  } = useForm<NewTransactionFormInputs>({
-    resolver: zodResolver(newTransactionModalSchema),
-    defaultValues: {
-      type: "income",
-    },
-  });
-
-  async function handleCreateNewTransaction(data: NewTransactionFormInputs) {
-    const { userAccount, totalBalance, category } = data;
-
-    await createUsers({
-      userAccount,
-      totalBalance,
-      category,
-    });
-
-    reset();
-  }
 
   return (
     <>

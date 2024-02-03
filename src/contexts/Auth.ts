@@ -8,6 +8,7 @@ export interface User {
 export interface UserInput {
   username: string;
   password: string;
+  email: string;
 }
 
 interface AuthContextData {

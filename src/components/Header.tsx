@@ -4,7 +4,6 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { NewTransactionModal } from "./NewTransactionModal";
 import Image from "next/image";
 import { Login } from "@/pages/Login";
-import { Dashboard } from "@/pages/Dashboard";
 import { useAuth } from "@/hooks/useAuth";
 
 export function Header() {

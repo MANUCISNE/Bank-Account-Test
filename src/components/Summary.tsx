@@ -1,7 +1,6 @@
 "use client";
 
 import { useSummary } from "@/hooks/useSummary";
-import { totalBalanceFormatter } from "@/utils/formatter";
 import { ArrowCircleDown, ArrowCircleUp, CurrencyDollar } from "phosphor-react";
 
 export function Summary() {
@@ -18,7 +17,7 @@ export function Summary() {
           <ArrowCircleUp size={32} className="text-theme-green-light" />
         </header>
         <strong className="block mt-6 text-3xl text-theme-gray7-titles">
-          {totalBalanceFormatter.format(summary.totalIncome)}
+          {"Income"}
         </strong>
       </div>
       <div className="bg-theme-gray4-shape-tertiary rounded-md p-8 min-w-[280px]">
@@ -27,7 +26,7 @@ export function Summary() {
           <ArrowCircleDown size={32} className="text-theme-red" />
         </header>
         <strong className="block mt-6 text-3xl text-theme-gray7-titles">
-          {totalBalanceFormatter.format(summary.totalOutcome)}
+          {"Outcome"}
         </strong>
       </div>
       <div className="bg-theme-green-dark rounded-md p-8 min-w-[280px]">
@@ -36,7 +35,7 @@ export function Summary() {
           <CurrencyDollar size={32} className="text-white" />
         </header>
         <strong className="block mt-6 text-3xl text-theme-gray7-titles">
-          {totalBalanceFormatter.format(summary.totalBalance)}
+          {"Total Balance"}
         </strong>
       </div>
     </section>

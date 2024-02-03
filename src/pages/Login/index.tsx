@@ -2,24 +2,24 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import { FormEvent } from "react";
 
-import { CircleNotch, X } from "phosphor-react";
+import { CircleNotch } from "phosphor-react";
 
 import { useAuth } from "@/hooks/useAuth";
 import { useState } from "react";
 
-import handlerAllUsers from '@/services/api';
-
 interface FormValues {
   username: string;
   password: string;
+  email: string;
 }
 
-type FormObjectValue = "username" | "password";
+type FormObjectValue = "username" | "password" | "email";
 
 export function Login() {
   const [values, setValues] = useState<FormValues>({
     username: "",
     password: "",
+    email: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { Authenticate } = useAuth();
@@ -31,12 +31,13 @@ export function Login() {
   async function handleSubmit(ev: FormEvent) {
     ev.preventDefault();
 
-    const { username, password } = values;
+    const { username, password, email } = values;
 
     setIsSubmitting(true);
     await Authenticate({
       username,
       password,
+      email,
     });
 
     setIsSubmitting(false);
@@ -49,14 +50,14 @@ export function Login() {
       md:w-[535 px] gap-4"
       >
         <Dialog.Root>
-          <form onSubmit={handlerAllUsers} className="flex flex-col mt-4 gap-4">
-            <Dialog.Title className="text-theme-gray7-titles text-3xl font-bold">
+          <form onSubmit={handleSubmit} className="flex flex-col mt-4 gap-4">
+            <Dialog.Title className="text-gray-100 mb-5 text-3xl font-bold">
               Login
             </Dialog.Title>
             <input
-              placeholder="User account"
+              placeholder="User name"
               value={values.username}
-              className="bg-theme-gray2-background rounded-md p-4 border border-theme-gray1-background
+              className="bg-theme-gray200-background rounded-md p-4 border border-theme-gray1-background text-gray-100
               placeholder:text-theme-gray5-placeholder focus:border-theme-green-dark"
               required
             />
@@ -64,7 +65,7 @@ export function Login() {
               type="password"
               placeholder="Password"
               value={values.password}
-              className="bg-theme-gray2-background rounded-md p-4 border border-theme-gray1-background
+              className="bg-theme-gray200-background rounded-md p-4 border border-theme-gray1-background
               placeholder:text-theme-gray5-placeholder focus:border-theme-green-dark"
               required
             />
@@ -84,7 +85,7 @@ export function Login() {
             ) : (
               <button
                 type="submit"
-                className="h-14 p-5 mt-6 bg-theme-green text-theme-gray5-base-text rounded-md 
+                className="h-14 p-5 mt-6 bg-theme-green text-white font-semibold rounded-md 
                 hover:bg-theme-green-dark cursor-pointer transition ease-in duration-200"
               >
                 Login
