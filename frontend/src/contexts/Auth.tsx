@@ -29,7 +29,7 @@ const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
 const AuthProvider: React.FC = ({ children }: React.PropsWithChildren<{}>) => {
   const [data, setData] = useState<UserCredentials>(() => {
-    const token = localStorage.getItem('@User:token');
+    const token = localStorage.getItem('@BankAccount:token');
     const user = localStorage.getItem('@BankAccount:user');
 
     if (token && user) {
@@ -48,7 +48,7 @@ const AuthProvider: React.FC = ({ children }: React.PropsWithChildren<{}>) => {
 
     const { token, user } = response.data;
 
-    localStorage.setItem('@User:token', token);
+    localStorage.setItem('@BankAccount:token', token);
     localStorage.setItem('@BankAccount:user', JSON.stringify(user));
 
     api.defaults.headers.authorization = `Bearer ${token}`;
@@ -57,7 +57,7 @@ const AuthProvider: React.FC = ({ children }: React.PropsWithChildren<{}>) => {
   }, []);
 
   const signOut = useCallback(() => {
-    localStorage.removeItem('@User:token');
+    localStorage.removeItem('@BankAccount:token');
     localStorage.removeItem('@BankAccount:user');
 
     setData({} as UserCredentials);
@@ -65,7 +65,7 @@ const AuthProvider: React.FC = ({ children }: React.PropsWithChildren<{}>) => {
 
   const updateUser = useCallback(
     (user: User) => {
-      localStorage.setItem('@GoBarber:user', JSON.stringify(user));
+      localStorage.setItem('@BankAccount:user', JSON.stringify(user));
 
       setData({
         token: data.token,

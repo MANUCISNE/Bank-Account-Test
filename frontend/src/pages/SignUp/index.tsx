@@ -16,6 +16,8 @@ interface SignUpFormData {
   password: string;
 }
 
+type FormObjectValue = "name" | "password" | "email";
+
 export function SignUp() {
   const [values, setValues] = useState<SignUpFormData>({
     name: "",
@@ -26,6 +28,11 @@ export function SignUp() {
   const formRef = useRef<FormHandles>(null);
   const { addToast } = useToast();
   const router = useRouter();
+
+
+  function handleChange(prop: FormObjectValue, value: string | number) {
+    setValues({ ...values, [prop]: value });
+  }
 
   const handleSubmit = useCallback(
     async (data: SignUpFormData) => {
@@ -87,12 +94,14 @@ export function SignUp() {
         <input
           placeholder="Name"
           value={values.name}
+          onChange={ev => handleChange("name", ev.target.value)}
           className="w-full p-3 rounded border border-gray-300 bg-gray-200 font-medium text-base placeholder-gray-500 mb-4"
           required
         />
         <input
           placeholder="Email"
           value={values.email}
+          onChange={ev => handleChange("email", ev.target.value)}
           className="w-full p-3 rounded border border-gray-300 bg-gray-200 font-medium text-base placeholder-gray-500 mb-4"
           required
         />
@@ -100,6 +109,7 @@ export function SignUp() {
           type="password"
           placeholder="Password"
           value={values.password}
+          onChange={ev => handleChange("password", ev.target.value)}
           className="w-full p-3 rounded border border-gray-300 bg-gray-200 font-medium text-base placeholder-gray-500 mb-4"
           required
         />
@@ -107,6 +117,7 @@ export function SignUp() {
           type="password"
           placeholder="Confirm Password"
           value={values.password}
+          onChange={ev => handleChange("password", ev.target.value)}
           className="w-full p-3 rounded border border-gray-300 bg-gray-200 font-medium text-base placeholder-gray-500 mb-4"
           required
         />
