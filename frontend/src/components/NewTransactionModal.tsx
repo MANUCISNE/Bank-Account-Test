@@ -3,14 +3,9 @@ import * as Dialog from "@radix-ui/react-dialog";
 
 import { X } from "phosphor-react";
 
-import { UsersContext } from "@/contexts/UsersContext";
-import { useContextSelector } from "use-context-selector";
 import { SignUp } from "@/pages/SignUp";
 
 export function NewTransactionModal() {
-  const createUsers = useContextSelector(UsersContext, (context) => {
-    return context.createUsers;
-  });
 
   return (
     <>
