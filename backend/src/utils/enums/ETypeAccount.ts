@@ -1,0 +1,4 @@
+export enum ETypeAccount {
+  CURRENT_ACCOUNT = 'CURRENT_ACCOUNT',
+  SAVINGS_ACCOUNT = 'SAVINGS_ACCOUNT',
+}
