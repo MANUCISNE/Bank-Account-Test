@@ -8,7 +8,7 @@ export default function Dashboard() {
 
   return (
     <>    
-      {/*<Summary />*/}
+      <Summary />
       <Table />
     </>
   );

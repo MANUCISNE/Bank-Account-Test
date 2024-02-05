@@ -10,6 +10,20 @@ interface IUser {
   name: string;
 }
 
+interface IUserAccount {
+  type_account: string;
+  id: string;
+  user_id: string;
+  value: number;
+  created_at: string;
+  updated_at: string;
+}
+
+interface IUserAccounts {
+  savings_account: IUserAccount;
+  current_account: IUserAccount;
+}
+
 interface ISignInCredentials {
   email: string;
   password: string;
@@ -20,7 +34,7 @@ interface AuthContextData {
   signIn(credentials: ISignInCredentials): Promise<void>;
   signOut(): void;
   updateUser(user: IUser): void;
-  getUsersList(): Promise<IUser[]>;
+  getUserAccountsList(): Promise<IUserAccounts>;
 }
 
 interface IUserCredentials {
@@ -63,22 +77,12 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
     setData({ access_token, user });
   }, []);
 
-  const getUsersList = useCallback(async () => {
-    try {
-      const response = await api.get<IUser[]>('/users');
+  const getUserAccountsList = useCallback(async (user_id: string) => {
+    const response = await api.get<IUserAccount>(`/accounts/${user_id}`);
   
-      if (response.status !== 200) {
-        throw new Error('Error fetching users');
-      }
-  
-      return response.data;
-    } catch (err) {
-      console.error(err);
-      return [];
-    }
+    return response.data;
   }, []);
   
-
   const signOut = useCallback(() => {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('@BankAccount:token');
@@ -104,7 +108,7 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
 
   return (
     <AuthContext.Provider
-      value={{ user: data.user, signIn, signOut, updateUser, getUsersList }}
+      value={{ user: data.user, signIn, signOut, updateUser, getUserAccountsList}}
     >
       {children}
     </AuthContext.Provider>
