@@ -19,11 +19,6 @@ interface IUserAccount {
   updated_at: string;
 }
 
-interface IUserAccounts {
-  savings_account: IUserAccount;
-  current_account: IUserAccount;
-}
-
 interface ISignInCredentials {
   email: string;
   password: string;
@@ -34,7 +29,7 @@ interface AuthContextData {
   signIn(credentials: ISignInCredentials): Promise<void>;
   signOut(): void;
   updateUser(user: IUser): void;
-  getUserAccountsList(): Promise<IUserAccounts>;
+  getUserAccountsList: () => {};
 }
 
 interface IUserCredentials {
@@ -59,6 +54,7 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
     return {} as IUserCredentials;
   });
 
+  
   const signIn = useCallback(async ({ email, password }: ISignInCredentials) => {
     const response = await api.post<IUserCredentials>('sessions', {
       email,
@@ -77,11 +73,13 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
     setData({ access_token, user });
   }, []);
 
-  const getUserAccountsList = useCallback(async (user_id: string) => {
-    const response = await api.get<IUserAccount>(`/accounts/${user_id}`);
+  
+  const getUserAccountsList = useCallback(async () => {
+    const response = await api.get<IUserAccount>('/accounts');
   
     return response.data;
   }, []);
+  
   
   const signOut = useCallback(() => {
     if (typeof window !== 'undefined') {

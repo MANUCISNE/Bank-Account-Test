@@ -33,12 +33,11 @@ export default function PrivateLayout({ children }: PrivateLayoutProps){
               className="w-10 h-10 rounded-full"
             />
           </button>
-            
-          <div className="max-w-[1120px] mx-auto flex items-center">
-          <button type="button" onClick={signOut} className="ml-auto bg-transparent border-0">
-          <FiPower className="text-gray-400 w-5 h-5" />
+        <div className="max-w-[1120px] mx-auto flex items-center">
+          <button type="button" onClick={signOut} className="ml-3  bg-transparent border-0">
+            <FiPower className="text-gray-400 w-5 h-5" />
           </button>
-      </div>
+        </div>
         </div>
       </Header>
       {children}
