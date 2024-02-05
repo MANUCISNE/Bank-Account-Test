@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  backend:
+    build: ./backend
+    container_name: bank-account-back
+    volumes:
+      - ./backend:/home/node/api
+      - /home/node/api/node_modules
+    ports:
+      - 3333:3333
+    networks:
+      - service-net
+
+  frontend:
+    build: ./frontend
+    container_name: bank-account-front
+    volumes:
+      - ./frontend:/home/node/front
+      - /home/node/api/node_modules
+    ports:
+      - 3000:3000
+    environment:
+      - API_URL=http://backend:3333
+    depends_on:
+      - backend
+    networks:
+      - service-net
+
+networks:
+  service-net:
+    driver: bridge

@@ -1,78 +1,88 @@
+'use client'
+
 import React, { createContext, useCallback, useState, useContext } from 'react';
 
 import api from '../services/api';
 
-interface User {
+interface IUser {
   id: string;
   email: string;
   name: string;
-  avatar_url: string;
 }
-interface SignInCredentials {
+
+interface ISignInCredentials {
   email: string;
   password: string;
 }
 
 interface AuthContextData {
-  user: User;
-  signIn(credentials: SignInCredentials): Promise<void>;
+  user: IUser;
+  signIn(credentials: ISignInCredentials): Promise<void>;
   signOut(): void;
-  updateUser(user: User): void;
+  updateUser(user: IUser): void;
 }
 
-interface UserCredentials {
-  token: string;
-  user: User;
+interface IUserCredentials {
+  access_token: string;
+  user: IUser;
 }
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
-const AuthProvider: React.FC = ({ children }: React.PropsWithChildren<{}>) => {
-  const [data, setData] = useState<UserCredentials>(() => {
-    const token = localStorage.getItem('@BankAccount:token');
-    const user = localStorage.getItem('@BankAccount:user');
+const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [data, setData] = useState<IUserCredentials>(() => {
+    if (typeof window !== 'undefined') {
+      const access_token = localStorage.getItem('@BankAccount:token');
+      const user = localStorage.getItem('@BankAccount:user');
 
-    if (token && user) {
-      api.defaults.headers.authorization = `Bearer ${token}`;
-      return { token, user: JSON.parse(user) };
+      if (access_token && user) {
+        api.defaults.headers.authorization = `Bearer ${access_token}`;
+        return { access_token, user: JSON.parse(user) };
+      }
     }
 
-    return {} as UserCredentials;
+    return {} as IUserCredentials;
   });
 
-  const signIn = useCallback(async ({ email, password }: SignInCredentials) => {
-    const response = await api.post<UserCredentials>('sessions', {
+  const signIn = useCallback(async ({ email, password }: ISignInCredentials) => {
+    const response = await api.post<IUserCredentials>('sessions', {
       email,
       password,
     });
 
-    const { token, user } = response.data;
+    const { access_token, user } = response.data;
 
-    localStorage.setItem('@BankAccount:token', token);
-    localStorage.setItem('@BankAccount:user', JSON.stringify(user));
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('@BankAccount:token', access_token);
+      localStorage.setItem('@BankAccount:user', JSON.stringify(user));
+    }
 
-    api.defaults.headers.authorization = `Bearer ${token}`;
+    api.defaults.headers.authorization = `Bearer ${access_token}`;
 
-    setData({ token, user });
+    setData({ access_token, user });
   }, []);
 
   const signOut = useCallback(() => {
-    localStorage.removeItem('@BankAccount:token');
-    localStorage.removeItem('@BankAccount:user');
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('@BankAccount:token');
+      localStorage.removeItem('@BankAccount:user');
+    }
 
-    setData({} as UserCredentials);
+    setData({} as IUserCredentials);
   }, []);
 
   const updateUser = useCallback(
-    (user: User) => {
-      localStorage.setItem('@BankAccount:user', JSON.stringify(user));
+    (user: IUser) => {
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('@BankAccount:user', JSON.stringify(user));
 
-      setData({
-        token: data.token,
-        user,
-      });
+        setData({
+          access_token: data.access_token,
+          user,
+        });
+      }
     },
-    [setData, data.token],
+    [setData, data.access_token],
   );
 
   return (
@@ -86,7 +96,8 @@ const AuthProvider: React.FC = ({ children }: React.PropsWithChildren<{}>) => {
 
 function useAuth(): AuthContextData {
   const context = useContext(AuthContext);
+
   return context;
 }
 
-export { AuthProvider, useAuth, AuthContext };
+export { AuthProvider, useAuth };

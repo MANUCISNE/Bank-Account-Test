@@ -29,7 +29,6 @@ const config: Config = {
           'gray7-titles': '#E1E1E6',
         },
       },
-     
     },
   },
   plugins: [],
