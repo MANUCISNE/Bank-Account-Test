@@ -20,6 +20,7 @@ interface AuthContextData {
   signIn(credentials: ISignInCredentials): Promise<void>;
   signOut(): void;
   updateUser(user: IUser): void;
+  getUsersList(): Promise<IUser[]>;
 }
 
 interface IUserCredentials {
@@ -62,6 +63,22 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
     setData({ access_token, user });
   }, []);
 
+  const getUsersList = useCallback(async () => {
+    try {
+      const response = await api.get<IUser[]>('/users');
+  
+      if (response.status !== 200) {
+        throw new Error('Error fetching users');
+      }
+  
+      return response.data;
+    } catch (err) {
+      console.error(err);
+      return [];
+    }
+  }, []);
+  
+
   const signOut = useCallback(() => {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('@BankAccount:token');
@@ -87,7 +104,7 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
 
   return (
     <AuthContext.Provider
-      value={{ user: data.user, signIn, signOut, updateUser }}
+      value={{ user: data.user, signIn, signOut, updateUser, getUsersList }}
     >
       {children}
     </AuthContext.Provider>
