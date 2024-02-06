@@ -4,7 +4,7 @@ import { PiPiggyBank, PiCoin } from 'react-icons/pi';
 
 interface PropsAccount {
   name: ETypeAccount;
-  value: string;
+  value: number;
 }
 
 export enum ETypeAccount {
@@ -12,19 +12,20 @@ export enum ETypeAccount {
   SAVINGS_ACCOUNT = 'SAVINGS_ACCOUNT',
 }
 
-const Summary: React.FC<PropsAccount> = ({name,
+const accountNames = {
+  'SAVINGS_ACCOUNT': ['Savings Account', <PiCoin key={1} size={32} className="text-theme-blue-light" />],
+  'CURRENT_ACCOUNT': ['Current Account', <PiPiggyBank key={2} size={32} className="text-theme-green-light" />],
+}
+
+const Summary: React.FC<PropsAccount> = ({ name,
   value
 }) => {
     return (
-      <section className="w-[280px] m-auto flex px-40 gap-8 mt-4 overflow-x-auto md:w-auto md:container lg:grid lg:grid-cols-3">
+      <section className="w-[150px] m-auto flex px-40 mt-4 overflow-x-auto md:w-auto md:container">
           <div className="bg-theme-gray4-shape-tertiary rounded-md p-8 min-w-[280px]">
             <header className="flex items-center justify-between text-theme-gray6-base-text">
-              <span>{name}</span>
-              {name === "SAVINGS_ACCOUNT" ? (
-                <PiPiggyBank size={32} className="text-theme-green-light" />
-              ) : (
-                <PiCoin size={32} className="text-theme-blue-light" />
-              )}
+            <span>{accountNames[name][0]}</span>
+            <span></span>{accountNames[name][1]}
             </header>
             <strong className="block mt-6 text-3xl text-theme-gray7-titles">
               {value}
@@ -34,4 +35,4 @@ const Summary: React.FC<PropsAccount> = ({name,
     );
   }
 
-export default Summary 
+export default Summary

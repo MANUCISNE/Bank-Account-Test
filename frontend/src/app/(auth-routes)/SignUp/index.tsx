@@ -126,7 +126,7 @@ export function SignUpModal() {
                   disabled={isSubmitting}
                   className="w-full h-14 p-5 mt-6 bg-theme-green text-white font-semibold rounded-md hover:bg-theme-green-dark cursor-pointer transition ease-in duration-200"
                 >
-                register
+                Register
               </button>
             </form>
           </div>
