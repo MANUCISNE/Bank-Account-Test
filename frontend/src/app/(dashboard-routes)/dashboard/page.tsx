@@ -41,13 +41,12 @@ export default function Dashboard() {
 
   return (
     <>
-      <div className="flex align-items-center">
+      <div className="flex">
         {accounts && <Summary name={ETypeAccount.SAVINGS_ACCOUNT} value={accounts[ETypeAccount.SAVINGS_ACCOUNT] || 0} />}
+        
         {accounts && <Summary name={ETypeAccount.CURRENT_ACCOUNT} value={accounts[ETypeAccount.CURRENT_ACCOUNT] || 0} />}
       </div>
-      {transactions.length > 0 && transactions.map((transaction) => (
-        <Transactions key={transaction.sender_account_id} {...transaction} />
-      ))}
+
       <div className="flex justify-center mt-4">
         <Dialog.Root>
           <Dialog.Trigger asChild>
@@ -58,6 +57,10 @@ export default function Dashboard() {
           <TransactionModal />
         </Dialog.Root>
       </div>
+      
+      {transactions.length > 0 && transactions.map((transaction) => (
+        <Transactions key={transaction.sender_account_id} {...transaction} />
+      ))}
     </>
   );
 }

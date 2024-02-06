@@ -1,5 +1,6 @@
 'use client';
 
+import { valueFormatter } from '@/src/utils/dateFormatter';
 import { PiPiggyBank, PiCoin } from 'react-icons/pi';
 
 interface PropsAccount {
@@ -28,7 +29,7 @@ const Summary: React.FC<PropsAccount> = ({ name,
             <span></span>{accountNames[name][1]}
             </header>
             <strong className="block mt-6 text-3xl text-theme-gray7-titles">
-              {value}
+              {valueFormatter.format(value)}
             </strong>
           </div>
       </section>
