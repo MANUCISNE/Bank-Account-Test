@@ -50,9 +50,9 @@ export function TransactionModal() {
         reset()
       } catch (error) {
         let descriptions: any[] = [];
+
         if (axios.isAxiosError(error)) {
           const axiosError: AxiosError = error;
-
           const data = axiosError.response?.data as { message: string[] };
 
           descriptions = data.message;
@@ -121,13 +121,15 @@ export function TransactionModal() {
                 className="w-full p-3 rounded border border-gray-300 bg-gray-200 font-medium text-black placeholder-gray-500 mb-4"
               />
 
-              <input
-                type="text"
-                placeholder="Type of account"
-                required
-                {...register("type")}
+              <select
+                id="type_account"
                 className="w-full p-3 rounded border border-gray-300 bg-gray-200 font-medium text-black placeholder-gray-500 mb-4"
-              />
+                {...register("type")}
+              >
+                <option value="">Choose account</option>
+                <option value="SAVINGS_ACCOUNT">Savings Account</option>
+                <option value="CURRENT_ACCOUNT">Current Account</option>
+              </select> 
 
               <input
                 type="date"

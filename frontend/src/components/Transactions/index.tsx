@@ -1,5 +1,7 @@
 "use client";
 
+import { dataFormatter, valueFormatter } from "@/src/utils/dateFormatter";
+
 export enum ETypeTransaction {
   INCOME = "INCOME",
   OUTCOME = "OUTCOME",
@@ -22,24 +24,26 @@ const Transaction: React.FC<Transactions> = ({
   type,
 }) => {
   return (
-    <div className="container m-auto px-6 md:px-40 mt-6">
+    <div className="container m-auto md:px-40 mt-6 items-center">
+    <div
+      className="bg-theme-gray3-shape-secondary grid grid-cols-3 rounded-md w-full mb-2 justify-items-stretch"
+      key={sender_account_id}
+    >
+      <div className="py-5 px-8 text-center">{type}</div>
       <div
-        className="bg-theme-gray3-shape-secondary grid grid-cols-5 rounded-md text-left w-full mb-2 items-center"
-        key={sender_account_id}
+        className={`py-5 px-8 ${
+          type === ETypeTransaction.INCOME
+            ? "text-theme-green-light"
+            : "text-theme-red"
+        } text-center`}
       >
-        <div className="py-5 px-8">{type}</div>
-        <div
-          className={`py-5 px-8 ${
-            type === ETypeTransaction.INCOME
-              ? "text-theme-green-light"
-              : "text-theme-red"
-          }`}
-        >
-          {value}
-        </div>
-        <div className="py-5 px-8">{created_at}</div>
+        {valueFormatter.format(value)}
       </div>
+      <div className="py-5 px-8 text-center"> {dataFormatter.format(new Date(created_at))}</div>
     </div>
+
+  </div>
+
   );
 };
 
