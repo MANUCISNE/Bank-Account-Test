@@ -1,3 +1,4 @@
+import { Expose } from 'class-transformer';
 import { Account } from 'src/accounts/entities/account.entity';
 import { ETypeTransaction } from 'src/utils/enums/ETypeTransaction';
 import {
@@ -6,7 +7,6 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  AfterLoad,
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
@@ -21,14 +21,14 @@ export class Transaction {
 
   @ManyToOne(() => Account, (account) => account.id)
   @JoinColumn({ name: 'sender_account_id' })
-  sender: Account;
+  sender_account: Account;
 
   @Column()
   recipient_account_id: string;
 
   @ManyToOne(() => Account, (account) => account.id)
   @JoinColumn({ name: 'recipient_account_id' })
-  recipient: Account;
+  recipient_account: Account;
 
   @Column()
   value: number;
@@ -42,14 +42,12 @@ export class Transaction {
   @UpdateDateColumn()
   updated_at: Date;
 
-  value_real: number;
-
-  @AfterLoad()
-  calculateValueReal() {
+  @Expose({ name: 'value_real' })
+  getValueReal() {
     if (this.type === ETypeTransaction.OUTCOME) {
-      this.value_real = -this.value;
+      return -this.value;
     }
 
-    this.value_real = this.value;
+    return this.value;
   }
 }

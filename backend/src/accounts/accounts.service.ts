@@ -23,22 +23,16 @@ export class AccountsService {
   }
 
   async createDual(user_id: string): Promise<ResponseAccountDto> {
-    const currentAccount = this.accountsRepository.create({
-      user_id,
-      type_account: ETypeAccount.CURRENT_ACCOUNT,
-    });
+    const accounts = Object.values(ETypeAccount).map((type_account) =>
+      this.accountsRepository.create({
+        user_id,
+        type_account,
+      }),
+    );
 
-    const savingsAccount = this.accountsRepository.create({
-      user_id,
-      type_account: ETypeAccount.SAVINGS_ACCOUNT,
-    });
+    await this.accountsRepository.save(accounts);
 
-    await Promise.all([
-      this.accountsRepository.save(currentAccount),
-      this.accountsRepository.save(savingsAccount),
-    ]);
-
-    return { current_account: currentAccount, savings_account: savingsAccount };
+    return this.formatObjectAccounts(accounts);
   }
 
   async findByIdUserId(id: string, user_id: string): Promise<Account> {
@@ -53,20 +47,7 @@ export class AccountsService {
   async findByUserId(user_id: string): Promise<ResponseAccountDto> {
     const accounts = await this.accountsRepository.findBy({ user_id });
 
-    const transformedObject = accounts.reduce<ResponseAccountDto>(
-      (result, item) => {
-        const { type_account, ...rest } = item;
-
-        if (type_account === ETypeAccount.SAVINGS_ACCOUNT) {
-          result.savings_account = { type_account, ...rest };
-        } else if (type_account === ETypeAccount.CURRENT_ACCOUNT) {
-          result.current_account = { type_account, ...rest };
-        }
-
-        return result;
-      },
-      {} as ResponseAccountDto,
-    );
+    const transformedObject = this.formatObjectAccounts(accounts);
 
     return transformedObject;
   }
@@ -97,13 +78,25 @@ export class AccountsService {
     return account;
   }
 
-  async update(account: Account): Promise<Account> {
-    const newAccount = await this.accountsRepository.save(account);
+  async update(account: Account[]): Promise<Account[]> {
+    const newAccounts = await this.accountsRepository.save(account);
 
-    return newAccount;
+    return newAccounts;
   }
 
   async remove(user_id: string): Promise<void> {
     await this.accountsRepository.delete({ user_id });
+  }
+
+  private formatObjectAccounts(accounts: Account[]): ResponseAccountDto {
+    return accounts.reduce<ResponseAccountDto>((result, item) => {
+      const { type_account, ...rest } = item;
+
+      Object.assign(result, {
+        [type_account.toLocaleLowerCase()]: { type_account, ...rest },
+      });
+
+      return result;
+    }, {} as ResponseAccountDto);
   }
 }

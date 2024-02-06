@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Param, Req } from '@nestjs/common';
 import { TransactionsService } from './transactions.service';
 import { AuthRequest } from 'src/sessions/auth/models/AuthRequest';
-import { BodyTransactionDto } from './dto/BodyTransactionDto';
+import { CreateTransactionDto } from './dto/CreateTransactionDto';
 
 @Controller('transactions')
 export class TransactionsController {
@@ -10,14 +10,11 @@ export class TransactionsController {
   @Post()
   create(
     @Req() req: AuthRequest,
-    @Body() bodyTransactionDto: BodyTransactionDto,
+    @Body() createTransactionDto: CreateTransactionDto,
   ) {
     const { user } = req;
 
-    return this.transactionsService.create({
-      ...bodyTransactionDto,
-      user_id: user.id,
-    });
+    return this.transactionsService.create(user.id, createTransactionDto);
   }
 
   @Get()

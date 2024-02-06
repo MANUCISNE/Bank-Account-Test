@@ -18,7 +18,7 @@ export class SessionsService {
     const user = await this.validateUser(email, password);
 
     if (!user) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException(['Invalid credentials']);
     }
 
     return await this.authToken(user);
@@ -44,7 +44,7 @@ export class SessionsService {
 
   private async authToken(
     user: User,
-  ): Promise<{ user: Partial<User>; access_token: string }> {
+  ): Promise<{ user: User; access_token: string }> {
     const payload = {
       email: user.email,
       sub: user.id,
@@ -54,7 +54,6 @@ export class SessionsService {
       secret: process.env.JWT_SECRET,
       expiresIn: process.env.JWT_EXPIRATION_TIME,
     });
-    delete user.password;
 
     return { user, access_token: token };
   }

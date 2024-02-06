@@ -32,7 +32,7 @@ export class UsersService {
     });
 
     if (userAlreadyExists) {
-      throw new ConflictException('Email is already in use');
+      throw new ConflictException(['Email is already in use']);
     }
 
     const hashedPassword = await bcrypt.hash(createUserDto.password, 8);
@@ -45,8 +45,6 @@ export class UsersService {
     await this.userRepository.save(user);
 
     await this.accountsService.createDual(user.id);
-
-    Object.assign(user, { password: undefined });
 
     return user;
   }

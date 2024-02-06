@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateTransactionDto } from './dto/CreateTransactionDto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -15,92 +19,124 @@ export class TransactionsService {
     private readonly accountsService: AccountsService,
   ) {}
 
-  async create({
-    user_id,
-    sender_account_id,
-    recipient_account_id,
-    type,
-    value,
-  }: CreateTransactionDto): Promise<Transaction> {
-    const accountSender = await this.accountsService.findByIdUserId(
-      sender_account_id,
+  async create(
+    user_id: string,
+    { type_account, recipient_account_id, type, value }: CreateTransactionDto,
+  ): Promise<Transaction> {
+    const accountSender = await this.accountsService.findByUserIdType(
       user_id,
+      type_account,
     );
     if (!accountSender) {
-      throw new NotFoundException('Sender account does not exist');
+      throw new NotFoundException(['Sender account does not exist!']);
     }
 
     let accountRecipient: Account;
-    if (recipient_account_id) {
+    if (recipient_account_id && accountSender.id !== recipient_account_id) {
+      if (type !== ETypeTransaction.TRANSFER) {
+        throw new BadRequestException([
+          'If recipient_account is not null, type must be TRANSFER',
+        ]);
+      }
+
       accountRecipient = await this.accountsService.findByIdUserId(
         recipient_account_id,
         user_id,
       );
-      if (type !== ETypeTransaction.TRANSFER) {
-        throw new NotFoundException('Tipo errado');
+      if (!accountRecipient) {
+        throw new NotFoundException(['Recipient account does not exist!']);
       }
+    } else if (
+      recipient_account_id &&
+      accountSender.id === recipient_account_id &&
+      type === ETypeTransaction.TRANSFER
+    ) {
+      throw new BadRequestException([
+        'Sender and recipient accounts cannot be TRANSFER type',
+      ]);
     } else {
       accountRecipient = accountSender;
       if (type === ETypeTransaction.TRANSFER) {
-        throw new NotFoundException('Tipo errado');
+        throw new BadRequestException([
+          'If recipient_account is null, type must be OUTCOME or INCOME',
+        ]);
       }
     }
-    if (!accountRecipient) {
-      throw new NotFoundException('Recipient account does not exist');
-    }
 
-    if (type === ETypeTransaction.OUTCOME && accountSender.value < value) {
-      throw new NotFoundException('Saldo insuficiente');
-    }
-
-    if (type === ETypeTransaction.TRANSFER && accountSender.value < value) {
-      throw new NotFoundException('Saldo insuficiente');
+    if (
+      [ETypeTransaction.OUTCOME, ETypeTransaction.TRANSFER].includes(type) &&
+      accountSender.value < value
+    ) {
+      throw new BadRequestException(['Insufficient balance']);
     }
 
     const transaction = this.transactionsRepository.create({
-      sender_account_id,
-      recipient_account_id: recipient_account_id ?? sender_account_id,
+      sender_account_id: accountSender.id,
+      recipient_account_id: accountRecipient.id ?? accountSender.id,
       type,
       value,
     });
 
+    const updateAccounts: Account[] = [];
     if (type === ETypeTransaction.TRANSFER) {
       accountSender.value -= value;
       accountRecipient.value += value;
-      await Promise.all([
-        this.accountsService.update(accountSender),
-        this.accountsService.update(accountRecipient),
-        this.transactionsRepository.save(transaction),
-      ]);
+      updateAccounts.push(accountRecipient);
     } else {
       accountSender.value +=
         type === ETypeTransaction.INCOME ? value : value * -1;
-
-      await Promise.all([
-        this.accountsService.update(accountSender),
-        this.transactionsRepository.save(transaction),
-      ]);
     }
+    updateAccounts.push(accountSender);
+
+    await Promise.all([
+      this.accountsService.update(updateAccounts),
+      this.transactionsRepository.save(transaction),
+    ]);
 
     return transaction;
   }
 
   async findByUserId(user_id: string): Promise<Transaction[]> {
-    const transactions = await this.transactionsRepository.find({
-      where: [{ sender: { user_id } }, { recipient: { user_id } }],
-      relations: {
-        sender: true,
-        recipient: true,
-      },
-    });
+    const transactions = await this.transactionsRepository
+      .createQueryBuilder('transaction')
+      .leftJoin('transaction.sender_account', 'sender_account')
+      .leftJoin('transaction.recipient_account', 'recipient_account')
+      .addSelect([
+        'sender_account.id',
+        'sender_account.user_id',
+        'sender_account.type_account',
+      ])
+      .addSelect([
+        'recipient_account.id',
+        'recipient_account.user_id',
+        'recipient_account.type_account',
+      ])
+      .where(
+        'sender_account.user_id = :user_id or recipient_account.user_id = :user_id',
+        { user_id },
+      )
+      .getMany();
 
     return transactions;
   }
 
   findById(id: string): Promise<Transaction> {
-    const transaction = this.transactionsRepository.findOneBy({
-      id,
-    });
+    const transaction = this.transactionsRepository
+      .createQueryBuilder('transaction')
+      .leftJoin('transaction.sender_account', 'sender_account')
+      .leftJoin('transaction.recipient_account', 'recipient_account')
+      .addSelect([
+        'sender_account.id',
+        'sender_account.user_id',
+        'sender_account.type_account',
+      ])
+      .addSelect([
+        'recipient_account.id',
+        'recipient_account.user_id',
+        'recipient_account.type_account',
+      ])
+      .where('transaction.id = :id', { id })
+      .getOne();
 
     return transaction;
   }

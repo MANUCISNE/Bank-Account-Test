@@ -5,6 +5,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Exclude } from 'class-transformer';
 
 @Entity()
 export class User {
@@ -18,10 +19,8 @@ export class User {
   email: string;
 
   @Column()
+  @Exclude()
   password: string;
-
-  // @OneToOne(() => SavingsAccount, (savingsAccount) => savingsAccount.user_id)
-  // savings_account: SavingsAccount;
 
   @CreateDateColumn()
   created_at: Date;

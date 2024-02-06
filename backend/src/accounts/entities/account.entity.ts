@@ -1,3 +1,4 @@
+import { User } from 'src/users/entities/user.entity';
 import { ETypeAccount } from 'src/utils/enums/ETypeAccount';
 import {
   Entity,
@@ -5,6 +6,8 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  JoinColumn,
+  ManyToOne,
 } from 'typeorm';
 
 @Entity()
@@ -14,6 +17,10 @@ export class Account {
 
   @Column()
   user_id: string;
+
+  @ManyToOne(() => User, (user) => user.id)
+  @JoinColumn({ name: 'user_id' })
+  user: User;
 
   @Column({ default: 0 })
   value: number;
