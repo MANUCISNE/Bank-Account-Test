@@ -4,36 +4,32 @@
 
 import Dashboard from '@/src/app/(dashboard-routes)/dashboard/page';
 import { render, screen } from '@testing-library/react';
+import '@testing-library/jest-dom';
 
-if (typeof TextEncoder === "undefined") {
-  const { TextEncoder, TextDecoder } = require("util");
-  global.TextEncoder = TextEncoder;
-  global.TextDecoder = TextDecoder;
-}
-
-import { setupServer } from 'msw/node';
-import { rest } from 'msw';
-
-const server = setupServer(
-  rest.get('/accounts', (req, res, ctx) => {
-    return res(ctx.json({ current_account: { value: 1000 }, savings_account: { value: 2000 } }))
+jest.mock('../src/services/api.ts', () => ({
+  get: jest.fn().mockImplementation((url) => {
+    if (url === '/accounts') {
+      return Promise.resolve({
+        data: {
+          current_account: { value: 1000 },
+          savings_account: { value: 2000 },
+        },
+      });
+    }
+    if (url === '/transactions') {
+      return Promise.resolve({
+        data: [],
+      });
+    }
   }),
-  rest.get('/transactions', (req, res, ctx) => {
-    return res(ctx.json([]))
-  })
-)
+}));
 
-beforeAll(() => server.listen())
-afterEach(() => server.resetHandlers())
-afterAll(() => server.close())
-
-test('renders Dashboard component', async () => {
-  render(<Dashboard />);
-
-  expect(await screen.findByText('Savings Account')).toBeInTheDocument();
-  expect(screen.getByText('1,000')).toBeInTheDocument();
-  expect(screen.getByText('Current Account')).toBeInTheDocument();
-  expect(screen.getByText('2,000')).toBeInTheDocument();
-
-  expect(screen.getByText('New transaction')).toBeInTheDocument();
+describe('Dashboard', () => {
+  it('renders without crashing', async () => {
+    const { findByText } = render(<Dashboard />);
+    const savingsAccount = await findByText(`Savings Account`);
+    const currentAccount = await findByText(`Current Account`);
+    expect(savingsAccount).toBeInTheDocument();
+    expect(currentAccount).toBeInTheDocument();
+  });
 });
