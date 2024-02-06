@@ -4,7 +4,7 @@ import api from '@/src/services/api';
 import * as Dialog from '@radix-ui/react-dialog'
 import axios, { AxiosError } from 'axios';
 import { X } from 'phosphor-react'
-import { useRef } from 'react';
+import { useCallback, useRef } from 'react';
 import { useForm } from 'react-hook-form'
 
 interface ISignUpFormData {
@@ -25,7 +25,8 @@ export function SignUpModal() {
 
   const buttonRef = useRef<HTMLButtonElement>(null);
 
-  async function handleCreateUser(data: ISignUpFormData) {
+  const handleCreateUser = useCallback(
+    async (data: ISignUpFormData) => {
 
     try {
       await api.post('/users', data);
@@ -42,22 +43,28 @@ export function SignUpModal() {
 
       reset();
     } catch (error) {
-      let description: any;
+      let descriptions: any[] = [];
       if (axios.isAxiosError(error)) {
         const axiosError: AxiosError = error;
 
-        const data = axiosError.response?.data as { message: string };
+        const data = axiosError.response?.data as { message: string[] };
 
-        description = data.message;
+        descriptions = data.message;
+      } else {
+        descriptions.push(undefined)
       }
 
-      addToast({
-        type: 'error',
-        title: 'Error in registration',
-        description,
-      });
+      descriptions.map(description => (
+        addToast({
+          type: 'error',
+          title: 'Error in registration',
+          description,
+        })
+      ))
     }
-  }
+    },
+    [addToast, reset]
+)
 
   return (
     <>

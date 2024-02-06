@@ -17,17 +17,17 @@ export class Transaction {
   id: string;
 
   @Column()
-  sender_id: string;
+  sender_account_id: string;
 
   @ManyToOne(() => Account, (account) => account.id)
-  @JoinColumn({ name: 'sender_id' })
+  @JoinColumn({ name: 'sender_account_id' })
   sender: Account;
 
   @Column()
-  recipient_id: string;
+  recipient_account_id: string;
 
   @ManyToOne(() => Account, (account) => account.id)
-  @JoinColumn({ name: 'recipient_id' })
+  @JoinColumn({ name: 'recipient_account_id' })
   recipient: Account;
 
   @Column()

@@ -17,13 +17,13 @@ export class TransactionsService {
 
   async create({
     user_id,
-    sender_id,
-    recipient_id,
+    sender_account_id,
+    recipient_account_id,
     type,
     value,
   }: CreateTransactionDto): Promise<Transaction> {
     const accountSender = await this.accountsService.findByIdUserId(
-      sender_id,
+      sender_account_id,
       user_id,
     );
     if (!accountSender) {
@@ -31,9 +31,9 @@ export class TransactionsService {
     }
 
     let accountRecipient: Account;
-    if (recipient_id) {
+    if (recipient_account_id) {
       accountRecipient = await this.accountsService.findByIdUserId(
-        recipient_id,
+        recipient_account_id,
         user_id,
       );
       if (type !== ETypeTransaction.TRANSFER) {
@@ -58,8 +58,8 @@ export class TransactionsService {
     }
 
     const transaction = this.transactionsRepository.create({
-      sender_id,
-      recipient_id: recipient_id ?? sender_id,
+      sender_account_id,
+      recipient_account_id: recipient_account_id ?? sender_account_id,
       type,
       value,
     });
