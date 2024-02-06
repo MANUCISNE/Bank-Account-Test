@@ -1,5 +1,5 @@
 "use client";
-import { useToast } from "@/src/contexts/Toast";
+import { ToastFunction } from "@/src/contexts/Toast";
 import api from "@/src/services/api";
 import * as Dialog from "@radix-ui/react-dialog";
 import axios, { AxiosError } from "axios";
@@ -28,7 +28,7 @@ export function TransactionModal() {
     reset,
     formState: { isSubmitting },
   } = useForm<ISignUpFormData>({});
-  const { addToast } = useToast();
+  const { addToast } = ToastFunction();
 
   const buttonRef = useRef<HTMLButtonElement>(null);
 
@@ -47,7 +47,7 @@ export function TransactionModal() {
           description: "You can check now!",
         });
 
-        reset()
+        reset();
       } catch (error) {
         let descriptions: any[] = [];
 
@@ -129,7 +129,7 @@ export function TransactionModal() {
                 <option value="">Choose account</option>
                 <option value="SAVINGS_ACCOUNT">Savings Account</option>
                 <option value="CURRENT_ACCOUNT">Current Account</option>
-              </select> 
+              </select>
 
               <input
                 type="date"

@@ -1,27 +1,29 @@
 "use client";
-import ToastContainer from '../components/ToastContainer';
-import React, { createContext, useCallback, useContext, useState } from 'react';
-import { v4 as uuid } from 'uuid';
+import ToastContainer from "../components/ToastContainer";
+import React, { createContext, useCallback, useContext, useState } from "react";
+import { v4 as uuid } from "uuid";
 
 export interface ToastMessage {
   id: string;
-  type?: 'success' | 'error' | 'info';
+  type?: "success" | "error" | "info";
   title: string;
   description?: string;
 }
 
 interface ToastContextData {
-  addToast(message: Omit<ToastMessage, 'id'>): void;
+  addToast(message: Omit<ToastMessage, "id">): void;
   removeToast(id: string): void;
 }
 
 const ToastContext = createContext<ToastContextData>({} as ToastContextData);
 
-const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const ToastProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [messages, setMessages] = useState<ToastMessage[]>([]);
 
   const addToast = useCallback(
-    ({ type, title, description }: Omit<ToastMessage, 'id'>) => {
+    ({ type, title, description }: Omit<ToastMessage, "id">) => {
       const id = uuid();
 
       const toast = {
@@ -31,13 +33,13 @@ const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =>
         description,
       };
 
-      setMessages(oldMessages => [...oldMessages, toast]);
+      setMessages((oldMessages) => [...oldMessages, toast]);
     },
-    [],
+    []
   );
 
   const removeToast = useCallback((id: string) => {
-    setMessages(state => state.filter(message => message.id !== id));
+    setMessages((state) => state.filter((message) => message.id !== id));
   }, []);
 
   return (
@@ -48,14 +50,14 @@ const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =>
   );
 };
 
-function useToast(): ToastContextData {
+function ToastFunction(): ToastContextData {
   const context = useContext(ToastContext);
 
   if (!context) {
-    throw new Error('useToast must be used within an ToastProvider');
+    throw new Error("ToastFunction must be used within an ToastProvider");
   }
 
   return context;
 }
 
-export { ToastProvider, useToast };
+export { ToastProvider, ToastFunction };

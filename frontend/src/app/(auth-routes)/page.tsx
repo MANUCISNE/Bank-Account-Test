@@ -1,10 +1,10 @@
-'use client'
+"use client";
 
-import { useToast } from "@/src/contexts/Toast";
+import { ToastFunction } from "@/src/contexts/Toast";
 import { useAuth } from "@/src/contexts/auth";
 import axios, { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
-import { useForm } from 'react-hook-form'
+import { useForm } from "react-hook-form";
 
 interface SignInFormData {
   email: string;
@@ -20,7 +20,7 @@ export default function Home() {
   } = useForm<SignInFormData>({});
   const router = useRouter();
   const { signIn } = useAuth();
-  const { addToast } = useToast();
+  const { addToast } = ToastFunction();
 
   async function handleLogin(data: SignInFormData) {
     try {
@@ -29,9 +29,9 @@ export default function Home() {
         password: data.password,
       });
 
-      reset()
+      reset();
 
-      router.replace('/dashboard')
+      router.replace("/dashboard");
     } catch (error) {
       let description: any;
       if (axios.isAxiosError(error)) {
@@ -43,8 +43,8 @@ export default function Home() {
       }
 
       addToast({
-        type: 'error',
-        title: 'Authentication error',
+        type: "error",
+        title: "Authentication error",
         description,
       });
     }
@@ -54,12 +54,15 @@ export default function Home() {
     <>
       <div className="bg-theme-gray1-background opacity-70 bg-theme-gray1-shape-main w-[500px] rounded-md px-10 py-12 fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 md:w-[535px] gap-4">
         <h1 className="text-gray-100 mb-5 text-3xl font-bold">Login</h1>
-        <form onSubmit={handleSubmit(handleLogin)} className="flex flex-col mt-4 gap-4">
+        <form
+          onSubmit={handleSubmit(handleLogin)}
+          className="flex flex-col mt-4 gap-4"
+        >
           <input
             type="text"
             placeholder="Email"
             required
-            {...register('email')}
+            {...register("email")}
             className="w-full p-3 rounded border border-gray-300 bg-gray-200 font-medium text-black placeholder-gray-500 mb-4"
           />
 
@@ -67,7 +70,7 @@ export default function Home() {
             type="password"
             placeholder="Password"
             required
-            {...register('password')}
+            {...register("password")}
             className="w-full p-3 rounded border border-gray-300 bg-gray-200 font-medium text-black placeholder-gray-500 mb-4"
           />
 
@@ -81,5 +84,5 @@ export default function Home() {
         </form>
       </div>
     </>
-  )
+  );
 }

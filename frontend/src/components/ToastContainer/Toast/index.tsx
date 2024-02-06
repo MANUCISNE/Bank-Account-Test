@@ -1,12 +1,12 @@
 "use client";
-import { ToastMessage, useToast } from '../../../contexts/Toast';
-import React, { useEffect } from 'react';
+import { ToastMessage, ToastFunction } from "../../../contexts/Toast";
+import React, { useEffect } from "react";
 import {
   FiAlertCircle,
   FiCheckCircle,
   FiInfo,
   FiXCircle,
-} from 'react-icons/fi';
+} from "react-icons/fi";
 
 interface ToastProps {
   message: ToastMessage;
@@ -20,7 +20,7 @@ const icons = {
 };
 
 const Toast: React.FC<ToastProps> = ({ message, style }) => {
-  const { removeToast } = useToast();
+  const { removeToast } = ToastFunction();
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -40,15 +40,19 @@ const Toast: React.FC<ToastProps> = ({ message, style }) => {
 
   return (
     <div
-      className={`w-96 relative p-4 md:p-6 border rounded-lg shadow-md flex ${toastTypeVariations[message.type || 'info']} ${!message.description && 'items-center'}`}
+      className={`w-96 relative p-4 md:p-6 border rounded-lg shadow-md flex ${
+        toastTypeVariations[message.type || "info"]
+      } ${!message.description && "items-center"}`}
       style={style}
     >
-      <div className="mr-3">
-        {icons[message.type || 'info']}
-      </div>
+      <div className="mr-3">{icons[message.type || "info"]}</div>
       <div className="flex-1">
         <strong>{message.title}</strong>
-        {message.description && <p className="mt-1 text-sm opacity-80 leading-5">{message.description}</p>}
+        {message.description && (
+          <p className="mt-1 text-sm opacity-80 leading-5">
+            {message.description}
+          </p>
+        )}
       </div>
       {/* <button onClick={() => removeToast(message.id)} type="button" className="absolute right-4 top-5 opacity-60">
         <FiXCircle size={18} />
