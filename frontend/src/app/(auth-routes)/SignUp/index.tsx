@@ -2,7 +2,7 @@
 
 import * as Dialog from "@radix-ui/react-dialog";
 import { X } from "phosphor-react";
-import { ToastFunction, ToastProvider } from "@/src/contexts/Toast";
+import { ToastFunction } from "@/src/contexts/Toast";
 import api from "@/src/services/api";
 import axios, { AxiosError } from "axios";
 import { useCallback, useRef } from "react";
@@ -67,7 +67,8 @@ export function SignUpModal() {
   );
 
   return (
-      <Dialog.Root>
+    <>
+      <Dialog.Portal>
         <Dialog.Overlay className="bg-theme-gray1-background opacity-70 fixed inset-0 w-full h-full" />
 
         <Dialog.Content className="bg-theme-gray2-shape-main w-[535px] rounded-md px-10 py-12 fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 md:w-[535 px]">
@@ -130,9 +131,11 @@ export function SignUpModal() {
             Register
           </button>
         </form>
-      </div>
+          </div>
 
         </Dialog.Content>
-      </Dialog.Root>
+      </Dialog.Portal>
+    </>
+
   );
 }

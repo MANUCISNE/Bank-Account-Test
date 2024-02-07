@@ -19,7 +19,9 @@ export function Header({
           <h1 className="text-xl font-bold">Bank System</h1>
         </div>
 
-        { children }
+        <div>
+          {children}  
+        </div>
       </div>
     </header>
   )
