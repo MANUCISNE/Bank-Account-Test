@@ -13,13 +13,11 @@ export enum ETypeTransaction {
   TRANSFER = "TRANSFER",
 }
 
-interface ISignUpFormData {
-  sender_account_id: string;
-  recipient_account_id?: string;
+interface ITransactionData {
+  type: string;
   value: number;
-  type: ETypeTransaction;
-  created_at: string;
-  type_transaction: string;
+  type_account: ETypeTransaction;
+  recipient_account_id?: string;
 }
 
 export function TransactionModal() {
@@ -28,51 +26,76 @@ export function TransactionModal() {
     handleSubmit,
     reset,
     formState: { isSubmitting },
-  } = useForm<ISignUpFormData>({});
+    watch,
+  } = useForm<ITransactionData>({});
   const { addToast } = ToastFunction();
 
   const buttonRef = useRef<HTMLButtonElement>(null);
 
-  const handleCreateTransaction = useCallback(
-    async (data: ISignUpFormData) => {
-      try {
-        await api.post("/transactions", data);
+  const transactionType = watch("type_account");
 
+  const handleCreateTransaction = useCallback(
+    async (data: ITransactionData) => {
+      try {
+        let transactionData;
+  
+        switch (data.type_account) {
+          case ETypeTransaction.INCOME:
+          case ETypeTransaction.OUTCOME:
+            transactionData = {
+              type_account: "CURRENT_ACCOUNT",
+              value: 25,
+              type: data.type_account,
+            };
+            break;
+          case ETypeTransaction.TRANSFER:
+            transactionData = {
+              type_account: "CURRENT_ACCOUNT",
+              recipient_account_id: data.recipient_account_id,
+              value: 0,
+              type: "TRANSFER",
+            };
+            break;
+          default:
+            throw new Error("Invalid transaction type");
+        }
+  
+        await api.post("/transactions", transactionData);
+  
         if (buttonRef.current) {
           buttonRef.current.click();
         }
-
+  
         addToast({
           type: "success",
           title: "Transaction completed!",
           description: "You can check now!",
         });
-
+  
         reset();
       } catch (error) {
         let descriptions: any[] = [];
-
+  
         if (axios.isAxiosError(error)) {
           const axiosError: AxiosError = error;
           const data = axiosError.response?.data as { message: string[] };
-
+  
           descriptions = data.message;
         } else {
           descriptions.push(undefined);
         }
-
+  
         descriptions.map((description) =>
           addToast({
             type: "error",
             title: "Error in transaction",
             description,
           })
-
         );
       }
     },
     [addToast, reset]
-  );
+  );  
 
   return (
     <>
@@ -100,11 +123,11 @@ export function TransactionModal() {
               className="mt-6 w-full max-w-lg flex flex-col items-center"
             >
               <select
-                id="type_account"
+                id="type"
                 className="w-full p-3 rounded border border-gray-300 bg-gray-200 font-medium text-black placeholder-gray-500 mb-4"
                 {...register("type")}
               >
-                <option value="">Choose account</option>
+                <option value="">Choose sender account</option>
                 <option value="SAVINGS_ACCOUNT">Savings Account</option>
                 <option value="CURRENT_ACCOUNT">Current Account</option>
               </select>
@@ -112,13 +135,22 @@ export function TransactionModal() {
               <select
                 id="type_account"
                 className="w-full p-3 rounded border border-gray-300 bg-gray-200 font-medium text-black placeholder-gray-500 mb-4"
-                {...register("type_transaction")}
+                {...register("type_account")}
               >
                 <option value="">Choose type of transaction</option>
                 <option value="INCOME">Income</option>
                 <option value="OUTCOME">Outcome</option>
                 <option value="TRANSFER">Transfer</option>
               </select>
+
+              {transactionType === ETypeTransaction.TRANSFER && (
+                <input
+                  type="text"
+                  placeholder="Recipient email"
+                  {...register("recipient_account_id")}
+                  className="w-full p-3 rounded border border-gray-300 bg-gray-200 font-medium text-black placeholder-gray-500 mb-4"
+                />
+              )}
 
               <input
                 type="value"
