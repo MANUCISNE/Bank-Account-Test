@@ -1,6 +1,6 @@
 # 🚀 Your Project
 
-## 🎯 Starting the Project
+## 🎯 Starting the Project - with Docker
 
 To start the project, you need to run the following command in the terminal:
 
@@ -20,3 +20,19 @@ The API documentation can be accessed through the following link:
 
 http://localhost:3333/docs
 
+
+## 🎯 Starting the Project - without Docker
+
+# BACKEND:
+
+1. Navigate to the backend folder.
+2. Run `npm install` in the terminal.
+3. Build the project: `npm run build`.
+4. Start the project: `npm run start`.
+
+# FRONTEND:
+
+1. Navigate to the frontend folder.
+2. Run `npm install` in the terminal.
+3. Build the project: `npm run build`.
+4. Start the project: `npm run dev`.
