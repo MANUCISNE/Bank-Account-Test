@@ -2,10 +2,10 @@
 
 import { ReactNode, useEffect } from "react";
 import { redirect } from "next/navigation";
-import { useAuth } from "../../contexts/auth";
 import { Header } from "@/src/components/Header";
 import * as Dialog from '@radix-ui/react-dialog'
 import { SignUpModal } from "./SignUp";
+import { useAuth } from "@/src/contexts/auth";
 
 interface PrivateLayoutProps {
 	children: ReactNode
