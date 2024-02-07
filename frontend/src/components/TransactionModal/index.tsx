@@ -19,6 +19,7 @@ interface ISignUpFormData {
   value: number;
   type: ETypeTransaction;
   created_at: string;
+  type_transaction: string;
 }
 
 export function TransactionModal() {
@@ -66,6 +67,7 @@ export function TransactionModal() {
             title: "Error in transaction",
             description,
           })
+
         );
       }
     },
@@ -97,30 +99,6 @@ export function TransactionModal() {
               onSubmit={handleSubmit(handleCreateTransaction)}
               className="mt-6 w-full max-w-lg flex flex-col items-center"
             >
-              <input
-                type="text"
-                placeholder="Sender account"
-                required
-                {...register("sender_account_id")}
-                className="w-full p-3 rounded border border-gray-300 bg-gray-200 font-medium text-black placeholder-gray-500 mb-4"
-              />
-
-              <input
-                type="text"
-                placeholder="Recipient account"
-                required
-                {...register("recipient_account_id")}
-                className="w-full p-3 rounded border border-gray-300 bg-gray-200 font-medium text-black placeholder-gray-500 mb-4"
-              />
-
-              <input
-                type="value"
-                placeholder="Value"
-                required
-                {...register("value")}
-                className="w-full p-3 rounded border border-gray-300 bg-gray-200 font-medium text-black placeholder-gray-500 mb-4"
-              />
-
               <select
                 id="type_account"
                 className="w-full p-3 rounded border border-gray-300 bg-gray-200 font-medium text-black placeholder-gray-500 mb-4"
@@ -131,11 +109,22 @@ export function TransactionModal() {
                 <option value="CURRENT_ACCOUNT">Current Account</option>
               </select>
 
+              <select
+                id="type_account"
+                className="w-full p-3 rounded border border-gray-300 bg-gray-200 font-medium text-black placeholder-gray-500 mb-4"
+                {...register("type_transaction")}
+              >
+                <option value="">Choose type of transaction</option>
+                <option value="INCOME">Income</option>
+                <option value="OUTCOME">Outcome</option>
+                <option value="TRANSFER">Transfer</option>
+              </select>
+
               <input
-                type="date"
-                placeholder="Date of transaction"
+                type="value"
+                placeholder="Value"
                 required
-                {...register("created_at")}
+                {...register("value")}
                 className="w-full p-3 rounded border border-gray-300 bg-gray-200 font-medium text-black placeholder-gray-500 mb-4"
               />
 
