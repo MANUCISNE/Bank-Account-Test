@@ -15,22 +15,33 @@ export interface Transactions {
   created_at: string;
 }
 
+export interface IAccount {
+  created_at: string;
+  ide: string;
+  type_account: ETypeAccount;
+  updated_at: string;
+  user_id: string;
+  value: number;
+}
+export interface Response {
+  current_account: IAccount;
+  savings_account: IAccount;
+}
+
 export enum ETypeAccount {
   CURRENT_ACCOUNT = 'CURRENT_ACCOUNT',
   SAVINGS_ACCOUNT = 'SAVINGS_ACCOUNT',
 }
 
+
 export default function Dashboard() {
-  const [accounts, setAccounts] = useState<{ [key in ETypeAccount]?: number }>({});
+  const [accounts, setAccounts] = useState<Response | null>(null);
   const [transactions, setTransactions] = useState<Transactions[]>([]);
 
   useEffect(() => {
     const fetchAccountsAndTransactions = async () => {
-      const accountsResponse = await api.get('/accounts');
-      setAccounts({
-        [ETypeAccount.CURRENT_ACCOUNT]: accountsResponse.data.current_account.value,
-        [ETypeAccount.SAVINGS_ACCOUNT]: accountsResponse.data.savings_account.value,
-      });
+      const accountsResponse = await api.get<Response>('/accounts');
+      setAccounts(accountsResponse.data);
 
       const transactionsResponse = await api.get('/transactions');
       setTransactions(transactionsResponse.data);
@@ -42,9 +53,9 @@ export default function Dashboard() {
   return (
     <>
       <div className="flex">
-        {accounts && <Summary name={ETypeAccount.SAVINGS_ACCOUNT} value={accounts[ETypeAccount.SAVINGS_ACCOUNT] || 0} />}
+        {accounts && <Summary name={ETypeAccount.SAVINGS_ACCOUNT} value={accounts.savings_account.value || 0} />}
         
-        {accounts && <Summary name={ETypeAccount.CURRENT_ACCOUNT} value={accounts[ETypeAccount.CURRENT_ACCOUNT] || 0} />}
+        {accounts && <Summary name={ETypeAccount.CURRENT_ACCOUNT} value={accounts.current_account.value || 0} />}
       </div>
 
       <div className="flex justify-center mt-4">

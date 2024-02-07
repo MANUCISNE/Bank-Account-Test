@@ -44,7 +44,7 @@ export function TransactionModal() {
           case ETypeTransaction.OUTCOME:
             transactionData = {
               type_account: "CURRENT_ACCOUNT",
-              value: 25,
+              value: 0,
               type: data.type_account,
             };
             break;
