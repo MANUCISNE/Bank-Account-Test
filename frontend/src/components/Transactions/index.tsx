@@ -1,24 +1,26 @@
 "use client";
 
 import { dataFormatter, valueFormatter } from "@/src/utils/formatter";
+import { ETypeAccount } from "../Summary";
+import { ETypeTransaction, ITransaction } from "../TransactionModal";
 
-export enum ETypeTransaction {
-  INCOME = "INCOME",
-  OUTCOME = "OUTCOME",
-  TRANSFER = "TRANSFER",
+
+interface ITransactionProps {
+  type_account: ETypeAccount;
+  created_at: string,
+  value: number,
+  type: ETypeTransaction,
 }
 
-export interface Transactions {
-  sender_account_id: string;
-  recipient_account_id?: string;
-  value: number;
-  type: ETypeTransaction;
-  created_at: string;
+const colorValues = {
+  [ETypeTransaction.INCOME]: "text-theme-green-light",
+  [ETypeTransaction.OUTCOME]: "text-theme-red",
+  [ETypeTransaction.TRANSFER]: "text-yellow-500",
 }
 
-const Transaction: React.FC<Transactions> = ({
-  sender_account_id,
-  recipient_account_id,
+const Transaction: React.FC<ITransaction> = ({
+  sender_account,
+  recipient_account,
   created_at,
   value,
   type,
@@ -26,15 +28,13 @@ const Transaction: React.FC<Transactions> = ({
   return (
     <div className="container m-auto md:px-40 mt-6 items-center">
       <div
-        className="bg-theme-gray3-shape-secondary grid grid-cols-3 rounded-md w-full mb-2 justify-items-stretch"
-        key={sender_account_id}
+        className="bg-theme-gray3-shape-secondary grid grid-cols-4 rounded-md w-full mb-2 justify-items-stretch"
       >
+        <div className="py-5 px-8 text-center">{type === ETypeTransaction.TRANSFER ? "" : sender_account.type_account}</div>
         <div className="py-5 px-8 text-center">{type}</div>
         <div
           className={`py-5 px-8 ${
-            type === ETypeTransaction.INCOME
-              ? "text-theme-green-light"
-              : "text-theme-red"
+            colorValues[type]
           } text-center`}
         >
           {valueFormatter.format(value)}

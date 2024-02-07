@@ -85,57 +85,55 @@ export function SignUpModal() {
               </div>
             </Dialog.Close>
           </Dialog.Title>
-          
+
           <div className="flex flex-col items-center">
             <form
               onSubmit={handleSubmit(handleCreateUser)}
               className="mt-6 w-full max-w-lg flex flex-col items-center"
             >
-          <input
-            type="name"
-            placeholder="Name"
-            required
-            {...register("name")}
-            className="w-full p-3 rounded border border-gray-300 bg-gray-200 font-medium text-black placeholder-gray-500 mb-4"
-          />
+              <input
+                type="name"
+                placeholder="Name"
+                required
+                {...register("name")}
+                className="w-full p-3 rounded border border-gray-300 bg-gray-200 font-medium text-black placeholder-gray-500 mb-4"
+              />
 
-          <input
-            type="email"
-            placeholder="Email"
-            required
-            {...register("email")}
-            className="w-full p-3 rounded border border-gray-300 bg-gray-200 font-medium text-black placeholder-gray-500 mb-4"
-          />
+              <input
+                type="email"
+                placeholder="Email"
+                required
+                {...register("email")}
+                className="w-full p-3 rounded border border-gray-300 bg-gray-200 font-medium text-black placeholder-gray-500 mb-4"
+              />
 
-          <input
-            type="password"
-            placeholder="Password"
-            required
-            {...register("password")}
-            className="w-full p-3 rounded border border-gray-300 bg-gray-200 font-medium text-black placeholder-gray-500 mb-4"
-          />
+              <input
+                type="password"
+                placeholder="Password"
+                required
+                {...register("password")}
+                className="w-full p-3 rounded border border-gray-300 bg-gray-200 font-medium text-black placeholder-gray-500 mb-4"
+              />
 
-          <input
-            type="password"
-            placeholder="Confirm password"
-            required
-            {...register("confirm_password")}
-            className="w-full p-3 rounded border border-gray-300 bg-gray-200 font-medium text-black placeholder-gray-500 mb-4"
-          />
+              <input
+                type="password"
+                placeholder="Confirm password"
+                required
+                {...register("confirm_password")}
+                className="w-full p-3 rounded border border-gray-300 bg-gray-200 font-medium text-black placeholder-gray-500 mb-4"
+              />
 
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full h-14 p-5 mt-6 bg-theme-green text-white font-semibold rounded-md hover:bg-theme-green-dark cursor-pointer transition ease-in duration-200"
-          >
-            Register
-          </button>
-        </form>
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full h-14 p-5 mt-6 bg-theme-green text-white font-semibold rounded-md hover:bg-theme-green-dark cursor-pointer transition ease-in duration-200"
+              >
+                Register
+              </button>
+            </form>
           </div>
-
         </Dialog.Content>
       </Dialog.Portal>
     </>
-
   );
 }

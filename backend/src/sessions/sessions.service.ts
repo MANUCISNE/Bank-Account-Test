@@ -1,10 +1,11 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { CreateSessionDto } from './dtos/CreateSessionDto';
+import { ResponseSessionDto } from './dtos/ResponseSessionDto';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class SessionsService {
@@ -14,14 +15,19 @@ export class SessionsService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async create({ email, password }: CreateSessionDto) {
+  async create({
+    email,
+    password,
+  }: CreateSessionDto): Promise<ResponseSessionDto> {
     const user = await this.validateUser(email, password);
 
     if (!user) {
       throw new UnauthorizedException(['Invalid credentials']);
     }
 
-    return await this.authToken(user);
+    const session = await this.authToken(user);
+
+    return session;
   }
 
   /* internal functions */
@@ -42,9 +48,7 @@ export class SessionsService {
     return user;
   }
 
-  private async authToken(
-    user: User,
-  ): Promise<{ user: User; access_token: string }> {
+  private async authToken(user: User): Promise<ResponseSessionDto> {
     const payload = {
       email: user.email,
       sub: user.id,

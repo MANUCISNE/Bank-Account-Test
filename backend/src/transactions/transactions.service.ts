@@ -7,6 +7,7 @@ import { CreateTransactionDto } from './dto/CreateTransactionDto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Transaction } from './entities/transaction.entity';
+import { QueryTransactionDto } from './dto/QueryTransactionDto';
 import { AccountsService } from 'src/accounts/accounts.service';
 import { Account } from 'src/accounts/entities/account.entity';
 import { ETypeTransaction } from 'src/utils/enums/ETypeTransaction';
@@ -96,7 +97,10 @@ export class TransactionsService {
     return transaction;
   }
 
-  async findByUserId(user_id: string): Promise<Transaction[]> {
+  async findByUserId(
+    user_id: string,
+    { type_account }: QueryTransactionDto = null,
+  ): Promise<Transaction[]> {
     const transactions = await this.transactionsRepository
       .createQueryBuilder('transaction')
       .leftJoin('transaction.sender_account', 'sender_account')
@@ -112,9 +116,12 @@ export class TransactionsService {
         'recipient_account.type_account',
       ])
       .where(
-        'sender_account.user_id = :user_id or recipient_account.user_id = :user_id',
+        `
+          (sender_account.user_id = :user_id ${type_account ? `AND sender_account.type_account = '${type_account}'` : ``})
+        `,
         { user_id },
       )
+      .orderBy('transaction.created_at', 'DESC')
       .getMany();
 
     return transactions;
@@ -139,5 +146,12 @@ export class TransactionsService {
       .getOne();
 
     return transaction;
+  }
+
+  async removeAccount(account_id: string) {
+    return Promise.all([
+      this.transactionsRepository.delete({ sender_account_id: account_id }),
+      this.transactionsRepository.delete({ recipient_account_id: account_id }),
+    ]);
   }
 }

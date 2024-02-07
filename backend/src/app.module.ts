@@ -16,9 +16,9 @@ import { TransactionsModule } from './transactions/transactions.module';
       synchronize: true,
     }),
     AccountsModule,
+    TransactionsModule,
     UsersModule,
     SessionsModule,
-    TransactionsModule,
   ],
   providers: [
     {

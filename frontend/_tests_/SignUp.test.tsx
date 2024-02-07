@@ -3,7 +3,7 @@ import { render, fireEvent, waitFor } from "@testing-library/react";
 import { screen } from "@testing-library/dom";
 import api from "@/src/services/api";
 import React from "react";
-import FormCreateUser from "@/src/app/(auth-routes)/SignUp/form";
+import SignUpModal  from "@/src/app/(auth-routes)/SignUp";
 
 // Mock para a chamada de API
 jest.mock("../src/services/api.ts", () => ({
@@ -14,7 +14,7 @@ jest.mock("../src/services/api.ts", () => ({
 const mockAddToast = jest.fn();
 const mockRemoveToast = jest.fn();
 
-jest.mock("../src/app/auth-routes/SignUp/form", () => ({
+jest.mock("../src/app/(auth-routes)/SignUp/index.tsx", () => ({
   ToastFunction: () => ({
     addToast: mockAddToast,
     removeToast: mockRemoveToast,
@@ -32,7 +32,7 @@ describe("SignUpModal", () => {
 
     (api.post as jest.Mock).mockResolvedValue({});
 
-    const { getByPlaceholderText } = render(<FormCreateUser />);
+    const { getByPlaceholderText } = render(<SignUpModal />);
     const nameInput = getByPlaceholderText("Name");
     fireEvent.change(nameInput, { target: { value: mockData.name } });
 

@@ -4,14 +4,18 @@ import { UpdateAccountDto } from './dto/UpdateAccountDto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Account } from './entities/account.entity';
-import { ETypeAccount } from 'src/utils/enums/ETypeAccount';
 import { ResponseAccountDto } from './dto/ResponseAccountDto';
+import { Transaction } from 'src/transactions/entities/transaction.entity';
+import { ETypeAccount } from 'src/utils/enums/ETypeAccount';
 
 @Injectable()
 export class AccountsService {
   constructor(
     @InjectRepository(Account)
     private readonly accountsRepository: Repository<Account>,
+
+    @InjectRepository(Transaction)
+    private readonly transactionsRepository: Repository<Transaction>,
   ) {}
 
   async create(createAccountDto: CreateAccountDto): Promise<Account> {
@@ -47,6 +51,10 @@ export class AccountsService {
   async findByUserId(user_id: string): Promise<ResponseAccountDto> {
     const accounts = await this.accountsRepository.findBy({ user_id });
 
+    if (!accounts || !accounts.length) {
+      throw new NotFoundException(['Accounts does not exist!']);
+    }
+
     const transformedObject = this.formatObjectAccounts(accounts);
 
     return transformedObject;
@@ -68,7 +76,7 @@ export class AccountsService {
     const account = await this.accountsRepository.findOneBy({ id });
 
     if (!account) {
-      throw new NotFoundException('non-existent current account');
+      throw new NotFoundException(['non-existent current account']);
     }
 
     account.value += value;
@@ -85,6 +93,26 @@ export class AccountsService {
   }
 
   async remove(user_id: string): Promise<void> {
+    const accounts = await this.findByUserId(user_id);
+
+    if (accounts) {
+      const { current_account, savings_account } = accounts;
+      await Promise.all([
+        this.transactionsRepository.delete({
+          sender_account_id: current_account.id,
+        }),
+        this.transactionsRepository.delete({
+          recipient_account_id: current_account.id,
+        }),
+        this.transactionsRepository.delete({
+          sender_account_id: savings_account.id,
+        }),
+        this.transactionsRepository.delete({
+          recipient_account_id: savings_account.id,
+        }),
+      ]);
+    }
+
     await this.accountsRepository.delete({ user_id });
   }
 

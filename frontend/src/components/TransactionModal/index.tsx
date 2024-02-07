@@ -6,6 +6,7 @@ import axios, { AxiosError } from "axios";
 import { X } from "phosphor-react";
 import { useCallback, useRef } from "react";
 import { useForm } from "react-hook-form";
+import { ETypeAccount } from "../Summary";
 
 export enum ETypeTransaction {
   INCOME = "INCOME",
@@ -13,78 +14,86 @@ export enum ETypeTransaction {
   TRANSFER = "TRANSFER",
 }
 
-interface ITransactionData {
-  type: string;
+export interface ITransactionFormData {
+  type_account: ETypeAccount;
+  type: ETypeTransaction;
   value: number;
-  type_account: ETypeTransaction;
-  recipient_account_id?: string;
 }
 
-export function TransactionModal() {
+export interface ITransaction {
+  sender_account: {
+    type_account: ETypeAccount;
+  };
+  recipient_account: {
+    type_account: ETypeAccount;
+  };
+  id: string;
+  sender_account_id: string;
+  recipient_account_id: string;
+  value: number;
+  type: ETypeTransaction;
+  created_at: string;
+  updated_at: string;
+  value_real: number;
+}
+
+export function TransactionModal({ accounts, onTransaction }) {
   const {
     register,
     handleSubmit,
     reset,
     formState: { isSubmitting },
     watch,
-  } = useForm<ITransactionData>({});
+  } = useForm<ITransactionFormData>({});
   const { addToast } = ToastFunction();
 
   const buttonRef = useRef<HTMLButtonElement>(null);
 
-  const transactionType = watch("type_account");
+  const accountTypes = [
+    { value: "", label: "Choose sender account" },
+    { value: "SAVINGS_ACCOUNT", label: "Savings Account" },
+    { value: "CURRENT_ACCOUNT", label: "Current Account" },
+  ];
 
   const handleCreateTransaction = useCallback(
-    async (data: ITransactionData) => {
+    async (data: ITransactionFormData) => {
       try {
-        let transactionData;
-  
-        switch (data.type_account) {
-          case ETypeTransaction.INCOME:
-          case ETypeTransaction.OUTCOME:
-            transactionData = {
-              type_account: "CURRENT_ACCOUNT",
-              value: Number(data.value),
-              type: data.type_account,
-            };
-            break;
-          case ETypeTransaction.TRANSFER:
-            transactionData = {
-              type_account: "CURRENT_ACCOUNT",
-              recipient_account_id: data.recipient_account_id,
-              value: Number(data.value),
-              type: "TRANSFER",
-            };
-            break;
-          default:
-            throw new Error("Invalid transaction type");
+        const transactionBody = { ...data, value: Number(data.value) };
+
+        if (data.type === ETypeTransaction.TRANSFER) {
+          const recipient_account_type = Object.values(ETypeAccount).find(type_account => type_account !== data.type_account)?.toLocaleLowerCase()!;
+          Object.assign(transactionBody, { recipient_account_id: accounts[recipient_account_type].id })
         }
-  
-        await api.post("/transactions", transactionData);
-  
+
+        const resp = await api.post("/transactions", transactionBody);
+
+        const transaction = resp.data as ITransaction;
+
+        onTransaction(transaction);
+
         if (buttonRef.current) {
           buttonRef.current.click();
         }
-  
+
         addToast({
           type: "success",
           title: "Transaction completed!",
           description: "You can check now!",
         });
-  
+
         reset();
       } catch (error) {
         let descriptions: any[] = [];
-  
+
         if (axios.isAxiosError(error)) {
           const axiosError: AxiosError = error;
           const data = axiosError.response?.data as { message: string[] };
-  
+
           descriptions = data.message;
         } else {
           descriptions.push(undefined);
         }
-  
+
         descriptions.map((description) =>
           addToast({
             type: "error",
@@ -94,8 +103,8 @@ export function TransactionModal() {
         );
       }
     },
-    [addToast, reset]
-  );  
+    [addToast, reset, accounts]
+  );
 
   return (
     <>
@@ -122,20 +131,22 @@ export function TransactionModal() {
               onSubmit={handleSubmit(handleCreateTransaction)}
               className="mt-6 w-full max-w-lg flex flex-col items-center"
             >
+            <select
+                id="type_account"
+                className="w-full p-3 rounded border border-gray-300 bg-gray-200 font-medium text-black placeholder-gray-500 mb-4"
+                {...register("type_account")}
+              >
+                {accountTypes.map((type) => (
+                  <option key={type.value} value={type.value}>
+                    {type.label}
+                  </option>
+                ))}
+              </select>
+
               <select
                 id="type"
                 className="w-full p-3 rounded border border-gray-300 bg-gray-200 font-medium text-black placeholder-gray-500 mb-4"
                 {...register("type")}
-              >
-                <option value="">Choose sender account</option>
-                <option value="SAVINGS_ACCOUNT">Savings Account</option>
-                <option value="CURRENT_ACCOUNT">Current Account</option>
-              </select>
-
-              <select
-                id="type_account"
-                className="w-full p-3 rounded border border-gray-300 bg-gray-200 font-medium text-black placeholder-gray-500 mb-4"
-                {...register("type_account")}
               >
                 <option value="">Choose type of transaction</option>
                 <option value="INCOME">Income</option>
@@ -143,17 +154,8 @@ export function TransactionModal() {
                 <option value="TRANSFER">Transfer</option>
               </select>
 
-              {transactionType === ETypeTransaction.TRANSFER && (
-                <input
-                  type="text"
-                  placeholder="Recipient email"
-                  {...register("recipient_account_id")}
-                  className="w-full p-3 rounded border border-gray-300 bg-gray-200 font-medium text-black placeholder-gray-500 mb-4"
-                />
-              )}
-
               <input
-                type="value"
+                type="number"
                 placeholder="Value"
                 required
                 {...register("value")}

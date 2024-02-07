@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { User } from 'src/users/entities/user.entity';
 import { ETypeAccount } from 'src/utils/enums/ETypeAccount';
 import {
@@ -12,9 +13,11 @@ import {
 
 @Entity()
 export class Account {
+  @ApiProperty()
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  @ApiProperty()
   @Column()
   user_id: string;
 
@@ -22,15 +25,19 @@ export class Account {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
+  @ApiProperty()
   @Column({ default: 0 })
   value: number;
 
+  @ApiProperty({ enum: ETypeAccount })
   @Column()
   type_account: ETypeAccount;
 
+  @ApiProperty()
   @CreateDateColumn()
   created_at: Date;
 
+  @ApiProperty()
   @UpdateDateColumn()
   updated_at: Date;
 }
