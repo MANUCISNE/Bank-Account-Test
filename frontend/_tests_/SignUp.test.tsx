@@ -3,7 +3,7 @@ import { render, fireEvent, waitFor } from "@testing-library/react";
 import { screen } from "@testing-library/dom";
 import api from "@/src/services/api";
 import React from "react";
-import SignUpModal  from "@/src/app/(auth-routes)/SignUp";
+import { SignUpModal }  from "@/src/app/(auth-routes)/SignUp";
 
 // Mock para a chamada de API
 jest.mock("../src/services/api.ts", () => ({

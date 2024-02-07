@@ -103,7 +103,7 @@ export function TransactionModal({ accounts, onTransaction }) {
         );
       }
     },
-    [addToast, reset, accounts]
+    [onTransaction, addToast, reset, accounts]
   );
 
   return (
