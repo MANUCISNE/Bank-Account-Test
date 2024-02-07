@@ -1,23 +1,23 @@
-"use client"
+"use client";
 
-import Image from "next/image"
+import Image from "next/image";
 import { ReactNode, useEffect } from "react";
 import { redirect } from "next/navigation";
-import { useAuth } from "@/src/contexts/auth";
+import { useAuth } from "@/src/contexts/Auth";
 import { FiPower } from "react-icons/fi";
 import { Header } from "@/src/components/Header";
-import UserIcon from '../../assets/user.svg'
+import UserIcon from "../../assets/user.svg";
 
 interface PrivateLayoutProps {
-	children: ReactNode
+  children: ReactNode;
 }
 
-export default function PrivateLayout({ children }: PrivateLayoutProps){
+export default function PrivateLayout({ children }: PrivateLayoutProps) {
   const { user, signOut } = useAuth();
 
   useEffect(() => {
     if (!user) {
-      redirect('/')
+      redirect("/");
     }
   }, [user]);
 
@@ -33,14 +33,18 @@ export default function PrivateLayout({ children }: PrivateLayoutProps){
               className="w-10 h-10 rounded-full"
             />
           </button>
-        <div className="max-w-[1120px] mx-auto flex items-center">
-          <button type="button" onClick={signOut} className="ml-3  bg-transparent border-0">
-            <FiPower className="text-gray-400 w-5 h-5" />
-          </button>
-        </div>
+          <div className="max-w-[1120px] mx-auto flex items-center">
+            <button
+              type="button"
+              onClick={signOut}
+              className="ml-3  bg-transparent border-0"
+            >
+              <FiPower className="text-gray-400 w-5 h-5" />
+            </button>
+          </div>
         </div>
       </Header>
       {children}
     </>
-  )
+  );
 }

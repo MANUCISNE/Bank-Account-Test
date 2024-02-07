@@ -1,7 +1,7 @@
 "use client";
 
 import { ToastFunction } from "@/src/contexts/Toast";
-import { useAuth } from "@/src/contexts/auth";
+import { useAuth } from "@/src/contexts/Auth";
 import axios, { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";

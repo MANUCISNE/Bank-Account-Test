@@ -1,22 +1,22 @@
-"use client"
+"use client";
 
 import { ReactNode, useEffect } from "react";
 import { redirect } from "next/navigation";
 import { Header } from "@/src/components/Header";
-import * as Dialog from '@radix-ui/react-dialog'
+import * as Dialog from "@radix-ui/react-dialog";
 import { SignUpModal } from "./SignUp";
-import { useAuth } from "@/src/contexts/auth";
+import { useAuth } from "@/src/contexts/Auth";
 
 interface PrivateLayoutProps {
-	children: ReactNode
+  children: ReactNode;
 }
 
-export default function PrivateLayout({ children }: PrivateLayoutProps){
+export default function PrivateLayout({ children }: PrivateLayoutProps) {
   const { user } = useAuth();
 
   useEffect(() => {
     if (user) {
-      redirect('/dashboard')
+      redirect("/dashboard");
     }
   }, [user]);
 
@@ -34,5 +34,5 @@ export default function PrivateLayout({ children }: PrivateLayoutProps){
       </Header>
       {children}
     </>
-  )
+  );
 }

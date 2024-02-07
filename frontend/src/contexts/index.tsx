@@ -1,8 +1,8 @@
 "use client";
-import React from 'react';
+import React from "react";
 
-import { AuthProvider } from './auth';
-import { ToastProvider } from './Toast';
+import { AuthProvider } from "./Auth";
+import { ToastProvider } from "./Toast";
 
 export function AppProvider({
   children,
