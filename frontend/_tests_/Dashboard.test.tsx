@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import Dashboard from '@/src/app/(dashboard-routes)/dashboard/page';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';

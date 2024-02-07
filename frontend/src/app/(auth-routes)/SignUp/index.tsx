@@ -12,6 +12,7 @@ interface ISignUpFormData {
   email: string;
   password: string;
   confirm_password: string;
+  dialog: JSX.Element;
 }
 
 export function SignUpModal() {
@@ -67,7 +68,7 @@ export function SignUpModal() {
 
   return (
     <>
-      <Dialog.Portal>
+      <Dialog.Root>
         <Dialog.Overlay className="bg-theme-gray1-background opacity-70 fixed inset-0 w-full h-full" />
 
         <Dialog.Content className="bg-theme-gray2-shape-main w-[535px] rounded-md px-10 py-12 fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 md:w-[535 px]">
@@ -92,6 +93,7 @@ export function SignUpModal() {
             >
               <input
                 type="text"
+                id="text"
                 placeholder="Name"
                 required
                 {...register("name")}
@@ -132,7 +134,8 @@ export function SignUpModal() {
             </form>
           </div>
         </Dialog.Content>
-      </Dialog.Portal>
+      </Dialog.Root>
     </>
+
   );
 }

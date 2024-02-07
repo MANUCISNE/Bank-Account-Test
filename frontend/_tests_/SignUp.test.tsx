@@ -1,53 +1,54 @@
-import { render, fireEvent, waitFor } from "@testing-library/react";
-import axios from "axios";
-import { useForm } from "react-hook-form";
-import { ToastFunction } from "@/src/contexts/Toast";
-import ToastContainer from "@/src/components/ToastContainer";
+import { SignUpModal } from '@/src/app/(auth-routes)/SignUp';
+import '@testing-library/jest-dom';
+import { render, fireEvent, waitFor } from '@testing-library/react';
+import {screen} from '@testing-library/dom'
+import api from "@/src/services/api";
 
-jest.mock("axios");
-jest.mock("react-hook-form", () => ({
-  useForm: jest.fn().mockReturnValue({
-    register: jest.fn(),
-    handleSubmit: jest.fn(),
-    reset: jest.fn(),
-    formState: { isSubmitting: false },
-  }),
+jest.mock('../src/services/api.ts', () => ({
+  post: jest.fn(),
 }));
 
-describe("SignUpModal", () => {
-  it("should handle user creation successfully", async () => {
+describe('SignUpModal', () => {
+  it('should make API call on form submission', async () => {
     const mockData = {
-      name: "Test User",
-      email: "test@example.com",
-      password: "password",
-      confirm_password: "password",
+      name: 'Test User',
+      email: 'test@example.com',
+      password: 'password',
+      confirm_password: 'password',
     };
 
-    await waitFor(() => {
-      expect(useForm().reset).toHaveBeenCalled();
-      expect(ToastFunction().addToast).toHaveBeenCalledWith({
-        type: "success",
-        title: "Registration completed!",
-        description: "You can now login!",
-      });
-    });
-  });
+    (api.post as jest.Mock).mockResolvedValue({});
 
-  it("should handle user creation error", async () => {
-    const error = {
-      response: {
-        data: {
-          message: ["Error message"],
-        },
-      },
-    };
+    const { getByRole } = render(<SignUpModal />);
 
-    await waitFor(() => {
-      expect(ToastFunction().addToast).toHaveBeenCalledWith({
-        type: "error",
-        title: "Error in registration",
-        description: "Error message",
-      });
+    const nameInput = screen.getByPlaceholderText('Name') as HTMLInputElement;
+    const currentNameValue = nameInput.value;
+    fireEvent.change(nameInput, {
+      target: { value: mockData.name },
     });
+
+    const emailInput = screen.getByPlaceholderText('Email') as HTMLInputElement;
+    const currentEmailValue = emailInput.value;
+    fireEvent.change(emailInput, {
+      target: { value: mockData.email },
+    });
+
+    const passwordInput = screen.getByPlaceholderText('Password') as HTMLInputElement;
+    const currentPasswordValue = passwordInput.value;
+    fireEvent.change(passwordInput, {
+      target: { value: mockData.password },
+    });
+
+    const confirmPasswordInput = screen.getByPlaceholderText('Confirm password') as HTMLInputElement;
+    const currentConfirmPasswordValue = confirmPasswordInput.value;
+    fireEvent.change(confirmPasswordInput, {
+      target: { value: mockData.confirm_password },
+    });
+
+    fireEvent.click(getByRole('button', { name: /register/i }));
+
+    await waitFor(() =>
+      expect(api.post).toHaveBeenCalledWith('/users', mockData)
+    );
   });
 });
