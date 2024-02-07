@@ -13,6 +13,8 @@ RUN npm install
 
 COPY --chown=node:node . .
 
+RUN npm run build
+
 EXPOSE 3333
 
 ENTRYPOINT [ "npm", "run", "start" ]

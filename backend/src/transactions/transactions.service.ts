@@ -94,6 +94,9 @@ export class TransactionsService {
       this.transactionsRepository.save(transaction),
     ]);
 
+    transaction.sender_account = accountSender;
+    transaction.recipient_account = accountRecipient;
+
     return transaction;
   }
 
