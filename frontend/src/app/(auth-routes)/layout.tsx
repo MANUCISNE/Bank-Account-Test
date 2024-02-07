@@ -29,8 +29,8 @@ export default function PrivateLayout({ children }: PrivateLayoutProps){
               New account
             </button>
           </Dialog.Trigger>
-          <SignUpModal />
         </Dialog.Root>
+        <SignUpModal />
       </Header>
       {children}
     </>
