@@ -1,8 +1,9 @@
-import { SignUpModal } from '@/src/app/(auth-routes)/SignUp';
+
 import '@testing-library/jest-dom';
 import { render, fireEvent, waitFor } from '@testing-library/react';
-import {screen} from '@testing-library/dom'
+import { screen } from '@testing-library/dom'
 import api from "@/src/services/api";
+import { FormCreateUser } from '@/src/app/(auth-routes)/SignUp/form';
 
 jest.mock('../src/services/api.ts', () => ({
   post: jest.fn(),
@@ -19,33 +20,21 @@ describe('SignUpModal', () => {
 
     (api.post as jest.Mock).mockResolvedValue({});
 
-    const { getByRole } = render(<SignUpModal />);
+    render(<FormCreateUser />);
 
-    const nameInput = screen.getByPlaceholderText('Name') as HTMLInputElement;
-    const currentNameValue = nameInput.value;
-    fireEvent.change(nameInput, {
-      target: { value: mockData.name },
-    });
+    const nameInput = screen.getByPlaceholderText('Name');
+    fireEvent.change(nameInput, { target: { value: mockData.name } });
 
-    const emailInput = screen.getByPlaceholderText('Email') as HTMLInputElement;
-    const currentEmailValue = emailInput.value;
-    fireEvent.change(emailInput, {
-      target: { value: mockData.email },
-    });
+    const emailInput = screen.getByPlaceholderText('Email');
+    fireEvent.change(emailInput, { target: { value: mockData.email } });
 
-    const passwordInput = screen.getByPlaceholderText('Password') as HTMLInputElement;
-    const currentPasswordValue = passwordInput.value;
-    fireEvent.change(passwordInput, {
-      target: { value: mockData.password },
-    });
+    const passwordInput = screen.getByPlaceholderText('Password');
+    fireEvent.change(passwordInput, { target: { value: mockData.password } });
 
-    const confirmPasswordInput = screen.getByPlaceholderText('Confirm password') as HTMLInputElement;
-    const currentConfirmPasswordValue = confirmPasswordInput.value;
-    fireEvent.change(confirmPasswordInput, {
-      target: { value: mockData.confirm_password },
-    });
+    const confirmPasswordInput = screen.getByPlaceholderText('Confirm password');
+    fireEvent.change(confirmPasswordInput, { target: { value: mockData.confirm_password } });
 
-    fireEvent.click(getByRole('button', { name: /register/i }));
+    fireEvent.click(screen.getByRole('button', { name: /register/i }));
 
     await waitFor(() =>
       expect(api.post).toHaveBeenCalledWith('/users', mockData)
